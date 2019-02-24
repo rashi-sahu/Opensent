@@ -26,7 +26,7 @@ contract CanteenContract {
     personBalance -= totalPrice;
   }
 
-  function validItem() returns (bool){
+  function validItem(item) returns (bool){
     if(item == "Maggi" || item == "Burger" || item == "Paratha" || item == "Pasta")
       return true;
     return false;
