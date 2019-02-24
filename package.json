@@ -4,8 +4,8 @@
   "description": "Implementing financial smart contracts using Blockchain where government is one of the stakeholder",
   "main": "index.js",
   "scripts": {
-    "start" : "node server.js",
-    "testRPC" : "testrpc",
+    "start": "node server.js",
+    "testRPC": "testrpc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
