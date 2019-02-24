@@ -5,7 +5,7 @@ contract CanteenContract {
   uint256 personBalance;
   uint256 governmentBalance;
 
-  mapping (bytes32 => uint8) public menu;
+  mapping (bytes32 => uint256) public menu;
 
   function CanteenContract(){
     canteenBalance = 0;
@@ -19,14 +19,14 @@ contract CanteenContract {
 
   function buyItem(bytes32 item) {
     if(validItem(item)==false) throw;
-    uint8 price = menu[item];
-    uint8 totalPrice = price*1.05;
+    uint256 price = menu[item];
+    uint256 totalPrice = price+5;
     canteenBalance += price;
-    governmentBalance += price*0.05;
+    governmentBalance += 5;
     personBalance -= totalPrice;
   }
 
-  function validItem(item) returns (bool){
+  function validItem(bytes32 item) returns (bool){
     if(item == "Maggi" || item == "Burger" || item == "Paratha" || item == "Pasta")
       return true;
     return false;
