@@ -5,7 +5,7 @@ contract CanteenContract {
   uint256 personBalance;
   uint256 governmentBalance;
 
-  mapping (bytes32 => uint) public menu;
+  mapping (bytes32 => uint8) public menu;
 
   function CanteenContract(){
     canteenBalance = 0;
