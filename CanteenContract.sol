@@ -17,4 +17,19 @@ contract CanteenContract {
     menu["Pasta"] = 80;
   }
 
+  function buyItem(bytes32 item) {
+    if(validItem(item)==false) throw;
+    uint8 price = menu[item];
+    uint8 totalPrice = price*1.05;
+    canteenBalance += price;
+    governmentBalance += price*0.05;
+    personBalance -= totalPrice;
+  }
+
+  function validItem() returns (bool){
+    if(item == "Maggi" || item == "Burger" || item == "Paratha" || item == "Pasta")
+      return true;
+    return false;
+  }
+
 }
