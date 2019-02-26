@@ -1,11 +1,12 @@
 $(document).ready(function() {  
-  fetch('/balances')
+  fetch('/balances', {
+    method: 'GET',
+  })
   .then(res => res.json())
   .then(res => {
-    const balancesTableHTML = res.candidates.map(function(candidate) {
-      return `<tr><td>${stakeholder.name}</td><td id='${stakeholder.name}'>${stakeholder.balance}</td></tr>`;
-    });
-
+    const balancesTableHTML = `<tr><td>${"Person"}</td><td id='${"Person"}'>${res.balances["personBalance"]}</td></tr>`
+      + `<tr><td>${"Canteen"}</td><td id='${"Canteen"}'>${res.balances["canteenBalance"]}</td></tr>`
+      + `<tr><td>${"Government"}</td><td id='${"Government"}'>${res.balances["governmentBalance"]}</td></tr>`;
     $('#balancesTable').html(balancesTableHTML);
   }).catch(function(err) {
     // Error :(
