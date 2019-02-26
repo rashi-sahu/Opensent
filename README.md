@@ -8,7 +8,7 @@ Opensent is one such product which implements smart contracts in a financial set
 
 - You pay the shopkeeper X+GST. Your wallet gets debited by X+GST Rs.
 
-- Shopkeer gets X Rs. credited in her wallet.
+- Shopkeeper gets X Rs. credited in her wallet.
 
 - The GST is credited to government's wallet. 
 
