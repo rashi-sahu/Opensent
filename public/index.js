@@ -21,6 +21,9 @@ $(document).ready(function() {
       headers: headers,
       body: JSON.stringify({ itemName: $('#itemName').val() }),
     })
+    .then(() => {
+      location.reload(true);
+    })
     .catch(function() {
       // Error
     });
