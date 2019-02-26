@@ -5,7 +5,7 @@ const solc = require('solc');
 const compiledCode = solc.compile(code);
 const abiDefinition = JSON.parse(compiledCode.contracts[':CanteenContract'].interface);
 const CanteenContract = web3.eth.contract(abiDefinition);
-const byteCode = compiledCode.contracts[':CanteenContract'].byteCode;
+const byteCode = compiledCode.contracts[':CanteenContract'].bytecode;
 const deployedCanteenContract = CanteenContract.new({ data: byteCode, from: web3.eth.accounts[0], gas: 4700000 });
 
 module.exports = deployedCanteenContract;
