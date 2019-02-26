@@ -23,5 +23,10 @@ This is one example. A smart contract in a canteen of an instituion has been wri
   ```
 - Install dependencies
   ```
+  $ npm install ethereumjs-testrpc
   $ npm install
+  ```
+- Start testrpc
+  ```
+  $ testrpc
   ```
