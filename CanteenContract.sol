@@ -9,7 +9,7 @@ contract CanteenContract {
 
     function CanteenContract() public{
         canteenBalance = 0;
-        personBalance = 0;
+        personBalance = 5000;
         governmentBalance = 0;
         menu["Maggi"] = 20;
         menu["Burger"] = 40;
