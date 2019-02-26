@@ -17,7 +17,9 @@ app.post('/buy', function (req, res) {
     const itemName = req.body.itemName.trim();
     contractInstance.buyItem(itemName, { from: web3.eth.accounts[0] }, function(result) {
       const personBalance = contractInstance.getPersonBalance.call({ from: web3.eth.accounts[0] }).toString();
-      res.send({ personBalance: personBalance});
+      const canteenBalance = contractInstance.getCanteenBalance.call({ from: web3.eth.accounts[0] }).toString();
+      const governmentBalance = contractInstance.getGovernmentBalance.call({ from: web3.eth.accounts[0] }).toString();
+      res.send({ personBalance: personBalance, canteenBalance: canteenBalance, governmentBalance: governmentBalance});
     });
   } catch (e) {
     res.status('400').send(`Failed! ${e}`);
