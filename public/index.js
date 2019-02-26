@@ -7,7 +7,9 @@ $(document).ready(function() {
     const balancesTableHTML = `<tr><td>${"Person"}</td><td id='${"Person"}'>${res.balances["personBalance"]}</td></tr>`
       + `<tr><td>${"Canteen"}</td><td id='${"Canteen"}'>${res.balances["canteenBalance"]}</td></tr>`
       + `<tr><td>${"Government"}</td><td id='${"Government"}'>${res.balances["governmentBalance"]}</td></tr>`;
-    $('#balancesTable').html(balancesTableHTML);
+    $('#Person').html(res.balances["personBalance"]);
+    $('#Canteen').html(res.balances["canteenBalance"]);
+    $('#Government').html(res.balances["governmentBalance"]);
   }).catch(function(err) {
     // Error :(
   });
