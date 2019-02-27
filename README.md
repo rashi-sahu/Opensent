@@ -30,3 +30,8 @@ This is one example. A smart contract in a canteen of an instituion has been wri
   ```
   $ testrpc
   ```
+- Start server
+  ```
+  $ npm start
+  ```
+  Navigate to http://localhost:3000
