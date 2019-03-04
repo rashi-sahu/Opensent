@@ -42,9 +42,8 @@ contract CanteenContract {
         return false;
     }
 
-    function updatePersonWallet(uint256 rechargeAmount) public returns (uint256){
+    function updatePersonWallet(uint256 rechargeAmount) public{
         personBalance += rechargeAmount;
-        return personBalance;
     }
 
 }
