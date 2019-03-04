@@ -42,6 +42,16 @@ app.get('/balances', function(req, res) {
     }
 });
 
+app.post('/recharge', function(req, res){
+  try{
+    const rechargeAmount = res.rechargeAmount;
+    const updatedBalance = contractInstance.updatePersonWallet(rechargeAmount, { from: web3.eth.accounts[0] }).toString();
+    res.send({updatedBalance : updatedBalance});
+  } catch(e){
+    res.status('400').send(`Failed! ${e}`)
+  }
+});
+
 app.listen(3000, function () {
   console.log('App ready and listening on port 3000!')
 });
