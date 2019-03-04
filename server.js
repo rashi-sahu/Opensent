@@ -42,6 +42,10 @@ app.get('/balances', function(req, res) {
     }
 });
 
+app.get('/recharge', function(req, res){
+  res.sendFile(path.join(__dirname + 'public/rechargeWallet.html'));
+});
+
 app.post('/recharge', function(req, res){
   try{
     const rechargeAmount = res.rechargeAmount;
