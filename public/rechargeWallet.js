@@ -4,7 +4,7 @@ $(document).ready(function () {
   })
   .then(res => res.json())
   .then(res => {
-    $('#Balance').html(res.balances["personBalance"]);
+    $('#balance').html(res.balances["personBalance"]);
   }).catch(function(err) {
     // Error :(
   });
@@ -20,10 +20,10 @@ $(document).ready(function () {
     })
     .then(res => res.json())
     .then(res => {
-      $('#Balance').html(res.personUpdatedBalance);
+      $('#balance').html(res.personUpdatedBalance);
     })
     .catch(function () {
-      $('#Balance').html("Some error Occured");
+      $('#balance').html("Some error Occured");
     });
   });
 });
