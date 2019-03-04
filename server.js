@@ -48,9 +48,9 @@ app.get('/recharge', function(req, res){
 
 app.post('/recharge', function(req, res){
   try{
-    const rechargeAmount = res.rechargeAmount;
-    const updatedBalance = contractInstance.updatePersonWallet(rechargeAmount, { from: web3.eth.accounts[0] }).toString();
-    res.send({updatedBalance : updatedBalance});
+    const rechargeAmount = req.body.rechargeAmount.trim();
+    const updatedBalance = contractInstance.updatePersonWallet.call(rechargeAmount, { from: web3.eth.accounts[0] }).toString();
+    res.send({ personUpdatedBalance : updatedBalance});
   } catch(e){
     res.status('400').send(`Failed! ${e}`)
   }
