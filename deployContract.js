@@ -1,3 +1,7 @@
+const express = require('express');
+const app = express();
+const bodyParser = require('body-parser');
+const path = require('path');
 const fs = require('fs');
 const web3 = require('./web3Client.js');
 const code = fs.readFileSync('CanteenContract.sol').toString();
@@ -6,6 +10,9 @@ const compiledCode = solc.compile(code);
 const abiDefinition = JSON.parse(compiledCode.contracts[':CanteenContract'].interface);
 const CanteenContract = new web3.eth.Contract(abiDefinition);
 const byteCode = compiledCode.contracts[':CanteenContract'].bytecode;
+
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.json());
 
 const deploy = async (CanteeContract, byteCode) => {
   const gas = await CanteeContract.deploy({data: byteCode}).estimateGas();
@@ -17,7 +24,59 @@ const deploy = async (CanteeContract, byteCode) => {
   return response;
 };
 
-deploy(CanteenContract, byteCode).then((contractClone) => {
-  module.exports = contractClone;
+deploy(CanteenContract, byteCode).then((contractInstance) => {
+  app.listen(3000, function () {
+    console.log('App ready and listening on port 3000!');
+  });
+
+  app.get('/', function(req, res){
+    res.sendFile(path.join(__dirname + 'public/index.html'));
+  });
+
+  app.post('/buy', function (req, res) {
+    try {
+      const itemName = req.body.itemName.trim();
+      contractInstance.methods.buyItem(itemName, { from: web3.eth.accounts[0] }, function(result) {
+        const personBalance = contractInstance.methods.getPersonBalance.call({ from: web3.eth.accounts[0] }).toString();
+        const canteenBalance = contractInstance.methods.getCanteenBalance.call({ from: web3.eth.accounts[0] }).toString();
+        const governmentBalance = contractInstance.methods.getGovernmentBalance.call({ from: web3.eth.accounts[0] }).toString();
+        res.send({ personBalance: personBalance, canteenBalance: canteenBalance, governmentBalance: governmentBalance});
+      });
+    } catch (e) {
+      res.status('400').send(`Failed! ${e}`);
+    }
+  });
+
+  app.get('/balances', function(req, res) {
+    var stakeholders = ['Person', 'Canteen', 'Government'];
+    try {
+      const stakeholderBalances = stakeholders.map(function(stakeholders) {
+        const personBalance = contractInstance.methods.getPersonBalance.call({ from: web3.eth.accounts[0] }).toString();
+        const canteenBalance = contractInstance.methods.getCanteenBalance.call({ from: web3.eth.accounts[0] }).toString();
+        const governmentBalance = contractInstance.methods.getGovernmentBalance.call({ from: web3.eth.accounts[0] }).toString();
+        balances = {personBalance, canteenBalance, governmentBalance};
+        console.log(balances);
+      });
+      res.send({ balances: balances });
+    } catch (e) {
+      res.status('400').send(`Failed! ${e}`);
+    }
+  });
+
+  app.get('/recharge', function(req, res){
+    res.sendFile(path.join(__dirname + '/public/rechargeWallet.html'));
+  });
+
+  app.post('/recharge', function(req, res){
+    try{
+      const rechargeAmount = req.body.rechargeAmount.trim();
+      contractInstance.methods.updatePersonWallet(rechargeAmount, { from: web3.eth.accounts[0] }, function(result) {
+        const updatedBalance = contractInstance.methods.getPersonBalance.call({ from: web3.eth.accounts[0] }).toString();
+        res.send({ personUpdatedBalance : updatedBalance});
+      });
+    } catch(e){
+      res.status('400').send(`Failed! ${e}`);
+    }
+  });
 }).catch(console.log);
 
