@@ -53,16 +53,28 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
   app.get('/balances', function(req, res) {
     var stakeholders = ['Person', 'Canteen', 'Government'];
     try {
-      const stakeholderBalances = stakeholders.map(function(stakeholders) {
-        //const personBalance = contractInstance.methods.getPersonBalance.call({ from: defaultAddress }).toString();
-        var personBalance=5;
-        contractInstance.methods.getPersonBalance().call({ from: defaultAddress }).then((result) => console.log(result));
-        const canteenBalance = contractInstance.methods.getCanteenBalance().call({ from: defaultAddress }).toString();
-        const governmentBalance = contractInstance.methods.getGovernmentBalance().call({ from: defaultAddress }).toString();
-        balances = {personBalance, canteenBalance, governmentBalance};
-        console.log(balances);
+      stakeholders.map(function() {
+        var personBalance=5, canteenBalance=10, governmentBalance=15;
+        contractInstance.methods.getPersonBalance().call({ from: defaultAddress })
+          .then((result) => {
+            personBalance=result;
+            contractInstance.methods.getCanteenBalance().call({ from: defaultAddress })
+              .then((result) => {
+                canteenBalance=result;
+                contractInstance.methods.getGovernmentBalance().call({ from: defaultAddress })
+                  .then((result) => {
+                    governmentBalance=result;
+                  })
+                  .then(()=>{
+                    let balances = {personBalance, canteenBalance, governmentBalance};
+                    res.send({ balances: balances });
+                  })
+                  .catch(()=>{
+                    console.log('Failed to get balances');
+                  });
+              });
+          });
       });
-      res.send({ balances: balances });
     } catch (e) {
       res.status('400').send(`Failed! ${e}`);
     }
