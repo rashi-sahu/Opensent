@@ -28,18 +28,18 @@ app.post('/buy', function (req, res) {
 
 app.get('/balances', function(req, res) {
   var stakeholders = ['Person', 'Canteen', 'Government'];
-    try {
-      const stakeholderBalances = stakeholders.map(function(stakeholders) {
-        const personBalance = contractInstance.getPersonBalance.call({ from: web3.eth.accounts[0] }).toString();
-        const canteenBalance = contractInstance.getCanteenBalance.call({ from: web3.eth.accounts[0] }).toString();
-        const governmentBalance = contractInstance.getGovernmentBalance.call({ from: web3.eth.accounts[0] }).toString();
-        balances = {personBalance, canteenBalance, governmentBalance};
-        console.log(balances);
-      });
-      res.send({ balances: balances });
-    } catch (e) {
-      res.status('400').send(`Failed! ${e}`);
-    }
+  try {
+    const stakeholderBalances = stakeholders.map(function(stakeholders) {
+      const personBalance = contractInstance.getPersonBalance.call({ from: web3.eth.accounts[0] }).toString();
+      const canteenBalance = contractInstance.getCanteenBalance.call({ from: web3.eth.accounts[0] }).toString();
+      const governmentBalance = contractInstance.getGovernmentBalance.call({ from: web3.eth.accounts[0] }).toString();
+      balances = {personBalance, canteenBalance, governmentBalance};
+      console.log(balances);
+    });
+    res.send({ balances: balances });
+  } catch (e) {
+    res.status('400').send(`Failed! ${e}`);
+  }
 });
 
 app.get('/recharge', function(req, res){
@@ -51,13 +51,13 @@ app.post('/recharge', function(req, res){
     const rechargeAmount = req.body.rechargeAmount.trim();
     contractInstance.updatePersonWallet(rechargeAmount, { from: web3.eth.accounts[0] }, function(result) {
       const updatedBalance = contractInstance.getPersonBalance.call({ from: web3.eth.accounts[0] }).toString();
-      res.send({ personUpdatedBalance : updatedBalance})
+      res.send({ personUpdatedBalance : updatedBalance});
     });
   } catch(e){
-    res.status('400').send(`Failed! ${e}`)
+    res.status('400').send(`Failed! ${e}`);
   }
 });
 
 app.listen(3000, function () {
-  console.log('App ready and listening on port 3000!')
+  console.log('App ready and listening on port 3000!');
 });
