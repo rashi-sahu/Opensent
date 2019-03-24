@@ -35,3 +35,8 @@ This is one example. A smart contract in a canteen of an instituion has been wri
   $ npm start
   ```
   Navigate to http://localhost:3000
+  
+- Linting 
+  ```
+  $ npm run lint
+  ```
