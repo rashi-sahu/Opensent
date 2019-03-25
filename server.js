@@ -38,6 +38,7 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
 
   app.post('/buy', function (req, res) {
     const itemName = req.body.itemName.trim();
+    var privateKey = req.body.privateKey.trim();
     var encodedABI = contractInstance.methods.buyItem(web3.utils.asciiToHex(itemName)).encodeABI();
     web3.eth.getTransactionCount(defaultAddress)
       .then((result) => {
@@ -49,7 +50,7 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
           gas: 2000000,
           data: encodedABI,
         };
-        let privateKey = new Buffer('7e1b4e037fb4c215d1526da1080642c3528f83eda90495b3570bddbfcd807959', 'hex');
+        privateKey = new Buffer(privateKey, 'hex');
         const transaction = new Tx(tx);
         transaction.sign(privateKey);
         const serializedTx = transaction.serialize();

@@ -21,7 +21,7 @@ $(document).ready(function() {
     fetch('/buy', {
       method: 'post',
       headers: headers,
-      body: JSON.stringify({ itemName: $('#itemName').val() }),
+      body: JSON.stringify({ itemName: $('#itemName').val(), privateKey: $('#privateKey').val() }),
     })
     .then(() => {
       location.reload(true);
