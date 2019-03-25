@@ -10,6 +10,7 @@ const compiledCode = solc.compile(code);
 const abiDefinition = JSON.parse(compiledCode.contracts[':CanteenContract'].interface);
 const CanteenContract = new web3.eth.Contract(abiDefinition);
 const byteCode = compiledCode.contracts[':CanteenContract'].bytecode;
+const Tx = require('ethereumjs-tx');
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
@@ -36,35 +37,35 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
   });
 
   app.post('/buy', function (req, res) {
-    try {
-      const itemName = req.body.itemName.trim();
-      var encodedABI = contractInstance.methods.buyItem(web3.utils.asciiToHex(itemName)).encodeABI();
-      var tx = {
-        from: defaultAddress,
-        to: contractInstance.options.address,
-        gas: 2000000,
-        data: encodedABI,
-      };
-      let privateKey = '7e1b4e037fb4c215d1526da1080642c3528f83eda90495b3570bddbfcd807959';
-      web3.eth.accounts.signTransaction(tx, privateKey).then(signed => {
-        console.log('signed' + signed);
-        var tran = web3.eth.sendSignedTransaction(signed.rawTransaction);
-        tran.on('confirmation', (confirmationNumber, receipt) => {
-          console.log('confirmation: ' + confirmationNumber);
-        });
-        tran.on('transactionHash', hash => {
-          console.log('hash');
-          console.log(hash);
-        });
-        tran.on('receipt', receipt => {
-          console.log('reciept');
-          console.log(receipt);
-        });
-        tran.on('error', console.error);
+    const itemName = req.body.itemName.trim();
+    var encodedABI = contractInstance.methods.buyItem(web3.utils.asciiToHex(itemName)).encodeABI();
+    web3.eth.getTransactionCount(defaultAddress)
+      .then((result) => {
+        var nonce = result;
+        var tx = {
+          nonce:  nonce,
+          from: defaultAddress,
+          to: contractInstance.options.address,
+          gas: 2000000,
+          data: encodedABI,
+        };
+        let privateKey = new Buffer('7e1b4e037fb4c215d1526da1080642c3528f83eda90495b3570bddbfcd807959', 'hex');
+        const transaction = new Tx(tx);
+        transaction.sign(privateKey);
+        const serializedTx = transaction.serialize();
+        web3.eth.accounts.signTransaction(tx, privateKey)
+          .then(signed => {
+            var tran = web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'));
+            tran.on('transactionHash', hash => {
+              res.send('Success');
+            });
+            tran.on('error', console.error);
+          })
+          .catch((e) => {
+            console.log('reject' + e);
+            res.status('400').send(`Failed! ${e}`);
+          });    
       });
-    } catch (e) {
-      res.status('400').send(`Failed! ${e}`);
-    }
   });
 
   app.get('/balances', function(req, res) {
@@ -87,7 +88,7 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
                     res.send({ balances: balances });
                   })
                   .catch(()=>{
-                    console.log('Failed to get balances');
+                    console.log('Failed to get balances...');
                   });
               });
           });
