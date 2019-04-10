@@ -18,8 +18,8 @@ app.use(bodyParser.json());
 var defaultAddress = '0xDCd592372C4DB3199671455B12768F407eFF8685';
 
 const deploy = async (CanteeContract, byteCode) => {
-  const gas = await CanteeContract.deploy({data: byteCode}).estimateGas();
-  const response = await CanteenContract.deploy({data: byteCode}).send({
+  const gas = await CanteeContract.deploy({ data: byteCode }).estimateGas();
+  const response = await CanteenContract.deploy({ data: byteCode }).send({
     from: defaultAddress,
     gas: gas + 1
   });
@@ -32,7 +32,7 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
     console.log('App ready and listening on port 3000!');
   });
 
-  app.get('/', function(req, res){
+  app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname + 'public/index.html'));
   });
 
@@ -44,7 +44,7 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
       .then((result) => {
         var nonce = result;
         var tx = {
-          nonce:  nonce,
+          nonce: nonce,
           from: defaultAddress,
           to: contractInstance.options.address,
           gas: 2000000,
@@ -65,30 +65,30 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
           .catch((e) => {
             console.log('reject' + e);
             res.status('400').send(`Failed! ${e}`);
-          });    
+          });
       });
   });
 
-  app.get('/balances', function(req, res) {
+  app.get('/balances', function (req, res) {
     var stakeholders = ['Person', 'Canteen', 'Government'];
     try {
-      stakeholders.map(function() {
-        var personBalance=5, canteenBalance=10, governmentBalance=15;
+      stakeholders.map(function () {
+        var personBalance = 5, canteenBalance = 10, governmentBalance = 15;
         contractInstance.methods.getPersonBalance().call({ from: defaultAddress })
           .then((result) => {
-            personBalance=result;
+            personBalance = result;
             contractInstance.methods.getCanteenBalance().call({ from: defaultAddress })
               .then((result) => {
-                canteenBalance=result;
+                canteenBalance = result;
                 contractInstance.methods.getGovernmentBalance().call({ from: defaultAddress })
                   .then((result) => {
-                    governmentBalance=result;
+                    governmentBalance = result;
                   })
-                  .then(()=>{
-                    let balances = {personBalance, canteenBalance, governmentBalance};
+                  .then(() => {
+                    let balances = { personBalance, canteenBalance, governmentBalance };
                     res.send({ balances: balances });
                   })
-                  .catch(()=>{
+                  .catch(() => {
                     console.log('Failed to get balances...');
                   });
               });
@@ -99,18 +99,18 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
     }
   });
 
-  app.get('/recharge', function(req, res){
+  app.get('/recharge', function (req, res) {
     res.sendFile(path.join(__dirname + '/public/rechargeWallet.html'));
   });
 
-  app.post('/recharge', function(req, res){
-    try{
+  app.post('/recharge', function (req, res) {
+    try {
       const rechargeAmount = req.body.rechargeAmount.trim();
-      contractInstance.methods.updatePersonWallet(rechargeAmount, { from: defaultAddress }, function(result) {
+      contractInstance.methods.updatePersonWallet(rechargeAmount, { from: defaultAddress }, function (result) {
         const updatedBalance = contractInstance.methods.getPersonBalance.call({ from: defaultAddress }).toString();
-        res.send({ personUpdatedBalance : updatedBalance});
+        res.send({ personUpdatedBalance: updatedBalance });
       });
-    } catch(e){
+    } catch (e) {
       res.status('400').send(`Failed! ${e}`);
     }
   });
