@@ -1,21 +1,6 @@
 pragma solidity ^0.4.11;
 
 contract CanteenContract {
-    struct Person {
-        bytes32 name;
-        uint256 balance;
-        bytes32 password;
-        bytes32 email;
-    }
-
-    struct Canteen{
-        bytes32 name;
-        uint256 balance;
-        bytes32 password;
-        bytes32 email;
-        mapping (bytes32 => uint256) menu;
-    }
-
     uint256 canteenBalance;
     uint256 personBalance;
     uint256 governmentBalance;
