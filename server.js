@@ -11,6 +11,7 @@ const abiDefinition = JSON.parse(compiledCode.contracts[':CanteenContract'].inte
 const CanteenContract = new web3.eth.Contract(abiDefinition);
 const byteCode = compiledCode.contracts[':CanteenContract'].bytecode;
 const Tx = require('ethereumjs-tx');
+const util = require('ethereumjs-util');
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
@@ -43,6 +44,11 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
   app.get('/canteen', function (req, res) {
     res.sendFile(path.join(__dirname + '/public/canteen/home.html'));
   });
+
+  app.post('/person/login', function(req, res){
+    const privateKey = req.body.privateKey.trim();
+    const address = util.bufferToHex(util.privateToAddress(privateKey));
+  })
 
   app.post('/buy', function (req, res) {
     const itemName = req.body.itemName.trim();
