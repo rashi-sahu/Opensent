@@ -9,85 +9,34 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
-  <script src="./index.js"></script>
+  <script src="./home.js"></script>
 </head>
 
 <body>
+
   <div class="container">
-    <h1>Canteen Management Dashboard</h1>
-    <h2>Select the items</h2>
-    <div class="table-responsive">
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>Item</th>
-            <th>Price</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Maggi</td>
-            <td>20</td>
-          </tr>
-          <tr>
-            <td>Burger</td>
-            <td>40</td>
-          </tr>
-          <tr>
-            <td>Paratha</td>
-            <td>30</td>
-          </tr>
-          <tr>
-            <td>Pasta</td>
-            <td>80</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <br>
-    <div class="row">
-      <div class="col-lg-3">
-        <div class="input-group  input-group-sm">
-          <input type="text" class="form-control" id="itemName" name="itemName" placeholder="Item Name" />
+    <h1>Canteen DApp</h1>
+    <div class="col-lg-6">
+        <h2>Person Login</h2>
+        <div class="input-group  input-group-md">
+            <input type="password" class="form-control" id="personPvtKey" name="personPvtKey" placeholder="Your Private Key" />
         </div>
-      </div>
-      <div class="col-lg-8">
-        <div class="input-group  input-group-sm">
-          <input type="password" class="form-control" id="privateKey" name="privateKey"
-            placeholder="Enter Your Private Key" />
-          <span class="input-group-btn">
-            <button type="button" class="btn btn-outline-primary" id="buyItem">Buy</button>
-          </span>
+        <br>
+        <span class="input-group-btn">
+            <button type="button" class="btn btn-outline-primary" id="personLogin">Login</button>
+        </span>
+    </div>      
+    <div class="col-lg-6">
+        <h2> Canteen Login</h2>
+        <div class="input-group  input-group-md">
+            <input type="password" class="form-control" id="canteenPvtKey" name="canteenPvtKey" placeholder="Your Private Key" />
         </div>
-      </div>
+        <br>
+        <span class="input-group-btn">
+            <button type="button" class="btn btn-outline-primary" id="canteenLogin">Login</button>
+        </span>
+    </div>      
     </div>
-    <br><br>
-    <div class="table-responsive">
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>Stakeholder</th>
-            <th>Balance</th>
-          </tr>
-        </thead>
-        <tbody id="balancesTable">
-          <tr>
-            <td>Person</td>
-            <td id="Person"></td>
-          </tr>
-          <tr>
-            <td>Canteen</td>
-            <td id="Canteen"></td>
-          </tr>
-          <tr>
-            <td>Government</td>
-            <td id="Government"></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <p align="right"><b><a href="/recharge">Recharge Person Wallet</a></b></p>
-  </div>
 </body>
 
 </html>
