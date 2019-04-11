@@ -38,11 +38,11 @@ contract CanteenContract {
     function getGovernmentBalance() public returns (uint256){
         return governmentBalance;
     }
-    function getCanteenBalance() public returns (uint256){
-        return canteenBalance;
+    function getCanteenBalance(address _address) public returns (uint256){
+        return canteens[_address];
     }
-    function getPersonBalance() public returns (uint256){
-        return personBalance;
+    function getPersonBalance(address _address) public returns (uint256){
+        return persons[_address];
     }
 
     function validItem(bytes32 item) public returns (bool){
