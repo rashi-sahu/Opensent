@@ -12,10 +12,14 @@ const CanteenContract = new web3.eth.Contract(abiDefinition);
 const byteCode = compiledCode.contracts[':CanteenContract'].bytecode;
 const Tx = require('ethereumjs-tx');
 const util = require('ethereumjs-util');
-
+var sessions = require('express-session');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
-
+app.use(sessions({
+  secret: '*7(7987*@#&$%(*&#)(*$',
+  resave: false,
+  saveUninitialized: true
+}));
 var defaultAddress = '0xa45E358D48C6890f5e8D3C6AD4aBB6Ce8D730de4';
 
 const deploy = async (CanteeContract, byteCode) => {
