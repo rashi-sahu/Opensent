@@ -33,7 +33,15 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
   });
 
   app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname + 'public/index.html'));
+    res.sendFile(path.join(__dirname + '/public/index.html'));
+  });
+
+  app.get('/person', function (req, res) {
+    res.sendFile(path.join(__dirname + '/public/person/home.html'));
+  });
+
+  app.get('/canteen', function (req, res) {
+    res.sendFile(path.join(__dirname + '/public/canteen/home.html'));
   });
 
   app.post('/buy', function (req, res) {
@@ -99,11 +107,11 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
     }
   });
 
-  app.get('/recharge', function (req, res) {
-    res.sendFile(path.join(__dirname + '/public/rechargeWallet.html'));
+  app.get('/person/recharge', function (req, res) {
+    res.sendFile(path.join(__dirname + '/public/person/rechargeWallet.html'));
   });
 
-  app.post('/recharge', function (req, res) {
+  app.post('/person/recharge', function (req, res) {
     try {
       const rechargeAmount = req.body.rechargeAmount.trim();
       contractInstance.methods.updatePersonWallet(rechargeAmount, { from: defaultAddress }, function (result) {

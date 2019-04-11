@@ -13,7 +13,7 @@ $(document).ready(function () {
     const headers = new Headers({
       'Content-Type': 'application/json',
     });
-    fetch('/recharge', {
+    fetch('/person/recharge', {
       method: 'post',
       headers: headers,
       body: JSON.stringify({ rechargeAmount: $('#rechargeAmount').val() }),
