@@ -15,7 +15,7 @@ const Tx = require('ethereumjs-tx');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 
-var defaultAddress = '0xDCd592372C4DB3199671455B12768F407eFF8685';
+var defaultAddress = '0xa45E358D48C6890f5e8D3C6AD4aBB6Ce8D730de4';
 
 const deploy = async (CanteeContract, byteCode) => {
   const gas = await CanteeContract.deploy({ data: byteCode }).estimateGas();

@@ -17,12 +17,12 @@ contract CanteenContract {
         menu["Burger"] = 40;
         menu["Paratha"] = 30;
         menu["Pasta"] = 80;
-        canteens[0x18F99CA73C14072Eba00dcd072434aF88af56Ef3] = 100;
-        canteens[0xe61bd37De6fd7Ef33D42C0F3a679e91D3352DD2c] = 150;
-        canteens[0x551E3fb72BffD415f7b1c1e65e5feAD76c132753] = 50;
-        persons[0xDCd592372C4DB3199671455B12768F407eFF8685] = 1000;
-        persons[0x7ed63514b00b106aAEAFD517042140Ce4Ba91d2a] = 1000;
-        persons[0x7357B1250fd5e04761D0FE4Ed1a684f988dC256A] = 1000;
+        canteens[0xAC6474E46f5E87bAf69EEE2c05b73cBD3b8b403f] = 100;
+        canteens[0x4c471A18A164F39540Fd0E9AccC0926DBee42d96] = 150;
+        canteens[0x0f9223193016114aA33C35Ee74060b1b5d954f31] = 50;
+        persons[0xa45E358D48C6890f5e8D3C6AD4aBB6Ce8D730de4] = 1000;
+        persons[0xFBFa8ABa3d7A429C47EDa7f0Ea3fB5890a775225] = 1000;
+        persons[0x95Ee97078a54716146E3546508be5694aF43caa8] = 1000;
 
     }
 
