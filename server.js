@@ -48,7 +48,7 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
   app.get('/person', function (req, res) {
     if (req.session.personLoggedIn==true) {
       res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-      res.render('../public/person/home.ejs', {address : req.session.address});
+      res.render('../public/person/home.ejs', {address : req.session.address, balance: req.session.balance});
     }
     else{
       res.redirect('/');
