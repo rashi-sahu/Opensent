@@ -43,11 +43,11 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
   });
 
   app.get('/person', function (req, res) {
-    res.sendFile(path.join(__dirname + '/public/person/home.html'));
+    res.render('../public/person/home.ejs');
   });
 
   app.get('/canteen', function (req, res) {
-    res.sendFile(path.join(__dirname + '/public/canteen/home.html'));
+    res.render('../public/canteen/home.html');
   });
 
   app.post('/person/login', function(req, res){
