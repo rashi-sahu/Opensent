@@ -20,6 +20,7 @@ app.use(sessions({
   resave: false,
   saveUninitialized: true
 }));
+app.set('view-engine', 'ejs');
 var defaultAddress = '0xa45E358D48C6890f5e8D3C6AD4aBB6Ce8D730de4';
 
 const deploy = async (CanteeContract, byteCode) => {
