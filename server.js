@@ -51,7 +51,10 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
 
   app.post('/person/login', function(req, res){
     const privateKey = req.body.privateKey.trim();
-    const address = util.bufferToHex(util.privateToAddress(privateKey));
+    const address = util.bufferToHex(util.privateToAddress('0x'+privateKey));
+    req.session.address = address;
+    req.session.personLoggedIn = true;
+    res.redirect('/person');
   })
 
   app.post('/buy', function (req, res) {
