@@ -39,7 +39,7 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
   });
 
   app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname + '/public/index.html'));
+    res.render('../public/index.ejs');
   });
 
   app.get('/person', function (req, res) {
