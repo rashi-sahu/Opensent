@@ -9,7 +9,6 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
-  <script src="./index.js"></script>
 </head>
 
 <body>
@@ -17,14 +16,16 @@
   <div class="container">
     <h1>Canteen DApp</h1>
     <div class="col-lg-6">
-        <h2>Person Login</h2>
-        <div class="input-group  input-group-md">
-            <input type="password" class="form-control" id="personPvtKey" name="personPvtKey" placeholder="Your Private Key" />
-        </div>
-        <br>
-        <span class="input-group-btn">
-            <button type="button" class="btn btn-outline-primary" id="personLogin">Login</button>
-        </span>
+        <form action="/person/login" id="personLoginForm" method="POST">
+            <h2>Person Login</h2>
+            <div class="input-group  input-group-md">
+                <input type="password" class="form-control" id="personPvtKey" name="privateKey" placeholder="Your Private Key" />
+            </div>
+            <br>
+            <span class="input-group-btn">
+                <button type="submit" class="btn btn-outline-primary" name = "personLogin" id="personLogin">Login</button>
+            </span>
+        </form>
     </div>      
     <div class="col-lg-6">
         <h2> Canteen Login</h2>

@@ -15,6 +15,9 @@ const util = require('ethereumjs-util');
 var sessions = require('express-session');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 app.use(sessions({
   secret: '*7(7987*@#&$%(*&#)(*$',
   resave: false,
@@ -57,6 +60,7 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
   });
 
   app.post('/person/login', function(req, res){
+    console.log(req.body);
     const privateKey = req.body.privateKey.trim();
     const address = util.bufferToHex(util.privateToAddress('0x'+privateKey));
     req.session.address = address;
