@@ -15,7 +15,14 @@
 <body>
   <div class="container">
     <h1>Canteen Management Dashboard</h1>
-    <h2>Welcome <%= address %></h2>
+    <div class = "row">
+      <div class="col-lg-10">
+        <h2>Welcome <%= address %></h2>
+      </div>
+      <div class="col-lg-2">
+        <p align="right"><a  class="btn btn-primary" href="/person/logout">Logout</a></p>
+      </div>
+    </div>
     <h2>Select the items</h2>
     <div class="table-responsive">
       <table class="table table-bordered">

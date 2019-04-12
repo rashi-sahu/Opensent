@@ -68,6 +68,12 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
     res.redirect('/person');
   })
 
+  app.get('/person/logout', function(req, res){
+    delete req.session.address;
+    delete req.session.personLoggedIn;
+    res.redirect('/');
+  })
+
   app.post('/buy', function (req, res) {
     const itemName = req.body.itemName.trim();
     var privateKey = req.body.privateKey.trim();
