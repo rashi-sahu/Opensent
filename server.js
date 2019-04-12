@@ -63,20 +63,24 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
     console.log(req.body);
     const privateKey = req.body.privateKey.trim();
     const address = util.bufferToHex(util.privateToAddress('0x'+privateKey));
-    req.session.privateKey = privateKey;
-    req.session.address = address;
-    req.session.personLoggedIn = true;
-    res.redirect('/person');
+    contractInstance.methods.getPersonBalance(address).call({ from: address })
+      .then(result => {
+        req.session.privateKey = privateKey;
+        req.session.address = address;
+        req.session.personLoggedIn = true;
+        req.session.balance = result;
+        res.redirect('/person');
+      })
+      .catch((err) => {
+        console.log('Some error occured in Login' + err);
+        res.redirect('/');
+      })
   })
 
   app.get('/person/logout', function(req, res){
     delete req.session.address;
     delete req.session.personLoggedIn;
     res.redirect('/');
-  })
-
-  app.get('/person/balance', function(req, res){
-
   })
 
   app.post('/buy', function (req, res) {
