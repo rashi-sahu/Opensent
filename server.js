@@ -56,7 +56,7 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
   });
 
   app.get('/canteen', function (req, res) {
-    res.render('../public/canteen/home.html');
+    res.render('../public/canteen/home.ejs');
   });
 
   app.post('/person/login', function(req, res){
