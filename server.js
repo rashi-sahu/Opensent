@@ -155,36 +155,6 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
       });
   });
 
-  app.get('/balances', function (req, res) {
-    var stakeholders = ['Person', 'Canteen', 'Government'];
-    try {
-      stakeholders.map(function () {
-        var personBalance = 5, canteenBalance = 10, governmentBalance = 15;
-        contractInstance.methods.getPersonBalance().call({ from: defaultAddress })
-          .then((result) => {
-            personBalance = result;
-            contractInstance.methods.getCanteenBalance().call({ from: defaultAddress })
-              .then((result) => {
-                canteenBalance = result;
-                contractInstance.methods.getGovernmentBalance().call({ from: defaultAddress })
-                  .then((result) => {
-                    governmentBalance = result;
-                  })
-                  .then(() => {
-                    let balances = { personBalance, canteenBalance, governmentBalance };
-                    res.send({ balances: balances });
-                  })
-                  .catch(() => {
-                    console.log('Failed to get balances...');
-                  });
-              });
-          });
-      });
-    } catch (e) {
-      res.status('400').send(`Failed! ${e}`);
-    }
-  });
-
   app.get('/person/recharge', function (req, res) {
     res.sendFile(path.join(__dirname + '/public/person/rechargeWallet.html'));
   });
