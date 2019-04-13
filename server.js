@@ -74,6 +74,7 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
         req.session.privateKey = privateKey;
         req.session.address = address;
         req.session.personLoggedIn = true;
+        req.session.canteenLoggedIn = false;
         req.session.balance = result;
         res.redirect('/person');
       })
@@ -91,6 +92,7 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
         req.session.privateKey = privateKey;
         req.session.address = address;
         req.session.canteenLoggedIn = true;
+        req.session.personLoggedIn = false;
         req.session.balance = result;
         res.redirect('/canteen');
       })
