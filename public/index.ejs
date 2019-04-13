@@ -28,14 +28,16 @@
         </form>
     </div>      
     <div class="col-lg-6">
-        <h2> Canteen Login</h2>
-        <div class="input-group  input-group-md">
-            <input type="password" class="form-control" id="canteenPvtKey" name="canteenPvtKey" placeholder="Your Private Key" />
-        </div>
-        <br>
-        <span class="input-group-btn">
-            <button type="button" class="btn btn-outline-primary" id="canteenLogin">Login</button>
-        </span>
+        <form action="/canteen/login" id="canteenLoginForm" method="POST">
+            <h2> Canteen Login</h2>
+            <div class="input-group  input-group-md">
+                <input type="password" class="form-control" id="canteenPvtKey" name="privateKey" placeholder="Your Private Key" />
+            </div>
+            <br>
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-outline-primary" name = "canteenLogin" id="canteenLogin">Login</button>
+            </span>
+        </form>
     </div>      
     </div>
 </body>
