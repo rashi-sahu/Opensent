@@ -56,7 +56,13 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
   });
 
   app.get('/canteen', function (req, res) {
-    res.render('../public/canteen/home.ejs');
+    if (req.session.canteenLoggedIn==true) {
+      res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+      res.render('../public/canteen/home.ejs', {address : req.session.address, balance: req.session.balance});
+    }
+    else{
+      res.redirect('/');
+    }
   });
 
   app.post('/person/login', function(req, res){
@@ -73,6 +79,23 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
       })
       .catch((err) => {
         console.log('Some error occured in Login' + err);
+        res.redirect('/');
+      })
+  })
+
+  app.post('/canteen/login', function(req, res){
+    const privateKey = req.body.privateKey.trim();
+    const address = util.bufferToHex(util.privateToAddress('0x'+privateKey));
+    contractInstance.methods.getCanteenBalance(address).call({ from: address })
+      .then(result => {
+        req.session.privateKey = privateKey;
+        req.session.address = address;
+        req.session.canteenLoggedIn = true;
+        req.session.balance = result;
+        res.redirect('/canteen');
+      })
+      .catch((err) => {
+        console.log('Some error occured in canteen login' + err);
         res.redirect('/');
       })
   })
