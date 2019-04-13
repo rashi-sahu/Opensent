@@ -71,4 +71,29 @@ contract CanteenContract {
         personBalance += rechargeAmount;
     }
 
+    function getOrdersOfCanteen(address _canteenAddress) public
+        returns (address[], address[], bytes32[], uint256[], uint256[]){
+            uint256[] memory indexes = new uint256[](100);
+            uint256 count = 0;
+            for (uint256 i = 0; i < orders.length; i++){
+                if(orders[i].canteenAddress == _canteenAddress){
+                    indexes[count] = i;
+                    count++;
+                }
+            }
+            address[] memory canteenAddresses = new address[](indexes.length);
+            address[] memory personAddresses = new address[](indexes.length);
+            bytes32[] memory itemNames = new bytes32[](indexes.length);
+            uint256[] memory prices = new uint256[](indexes.length);
+            uint256[] memory statusArray = new uint256[](indexes.length);
+
+            for (i = 0; i < indexes.length; i++) {
+                Order storage order = orders[indexes[i]];
+                canteenAddresses[i] = order.canteenAddress;
+                personAddresses[i] = order.personAddres;
+                itemNames[i] = order.itemName;
+                prices[i] = order.itemPrice;
+                statusArray[i] = order.status;
+            }
+    }
 }
