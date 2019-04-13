@@ -5,9 +5,22 @@ contract CanteenContract {
     uint256 personBalance;
     uint256 governmentBalance;
 
+    struct Order{
+        address canteenAddress;
+        address personAddres;
+        bytes32 itemName;
+        uint256 itemPrice;
+        uint256 status;
+        /*
+        0 denotes success
+        1 denotes cancellation request pending
+        2 cancellation accepted & amount refunded
+        */
+    }
     mapping (bytes32 => uint256) public menu;
     mapping(address => uint256) canteens;
     mapping(address => uint256) persons;
+    Order[] public orders;
 
     function CanteenContract() public{
         canteenBalance = 0;
@@ -23,7 +36,10 @@ contract CanteenContract {
         persons[0xa45E358D48C6890f5e8D3C6AD4aBB6Ce8D730de4] = 1000;
         persons[0xFBFa8ABa3d7A429C47EDa7f0Ea3fB5890a775225] = 1000;
         persons[0x95Ee97078a54716146E3546508be5694aF43caa8] = 1000;
-
+        Order memory dummyOrder = Order(0xAC6474E46f5E87bAf69EEE2c05b73cBD3b8b403f,
+                                0x4c471A18A164F39540Fd0E9AccC0926DBee42d96,
+                                "Maggi", 20, 0);
+        orders.push(dummyOrder);
     }
 
     function buyItem(bytes32 item) public{
