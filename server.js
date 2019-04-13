@@ -42,7 +42,15 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
   });
 
   app.get('/', function (req, res) {
-    res.render('../public/index.ejs');
+    if (req.session.personLoggedIn==true){
+      res.redirect('/person');
+    }
+    else if (req.session.canteenLoggedIn==true){
+      res.redirect('/canteen');
+    }
+    else{
+      res.render('../public/index.ejs');
+    }
   });
 
   app.get('/person', function (req, res) {
