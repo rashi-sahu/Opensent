@@ -27,6 +27,7 @@ contract CanteenContract {
     mapping(address => uint256) canteens;
     mapping(address => uint256) persons;
     Order[] public orders;
+    Item[] public items;
 
     function CanteenContract() public{
         canteenBalance = 0;
@@ -46,6 +47,12 @@ contract CanteenContract {
                                 0xa45E358D48C6890f5e8D3C6AD4aBB6Ce8D730de4,
                                 "Maggi", 20, 0);
         orders.push(dummyOrder);
+        Item memory dummyItem = Item(0xAC6474E46f5E87bAf69EEE2c05b73cBD3b8b403f, "Maggi", 20);
+        items.push(dummyItem);
+        dummyItem = Item(0xAC6474E46f5E87bAf69EEE2c05b73cBD3b8b403f, "Burger", 30);
+        items.push(dummyItem);
+        dummyItem = Item(0x4c471A18A164F39540Fd0E9AccC0926DBee42d96, "Pasta", 80);
+        items.push(dummyItem);
     }
 
     function buyItem(bytes32 item) public{
@@ -77,6 +84,9 @@ contract CanteenContract {
         personBalance += rechargeAmount;
     }
 
+    function getItems(){
+
+    }
     function getOrdersOfCanteen(address _canteenAddress) public
         returns (address[], address[], bytes32[], uint256[], uint256[]){
             uint256[] memory indexes = new uint256[](100);
