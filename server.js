@@ -112,6 +112,9 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
           result = JSON.stringify(result);
           result = JSON.parse(result);
           req.session.pastOrdersCustomerAddress = result["1"];
+          for(var i=0; i<result["2"].length; i++){
+            result["2"][i] = web3.utils.toUtf8(result["2"][i]);        
+          }
           req.session.pastOrdersItemNames = result["2"];
           req.session.pastOrdersItemPrices = result["3"];
           req.session.pastOrdersStatus = result["4"];
