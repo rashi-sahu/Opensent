@@ -90,7 +90,20 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
         req.session.personLoggedIn = true;
         req.session.canteenLoggedIn = false;
         req.session.balance = result;
-        res.redirect('/person');
+        contractInstance.methods.getItems().call({ from: address }).then((result)=>{
+          result = JSON.stringify(result);
+          result = JSON.parse(result);
+          req.session.catalogueCanteenAddress = result["0"];
+          for(var i=0; i<result["1"].length; i++){
+            result["1"][i] = web3.utils.toUtf8(result["1"][i]);
+          }
+          req.session.catalogueItemName = result["1"];
+          req.session.catalogueItemPrice = result["2"];
+          res.redirect('/person');
+        })
+        .catch((err) => {
+          console.log(err)
+        })
       })
       .catch((err) => {
         console.log('Some error occured in Login' + err);
