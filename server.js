@@ -66,7 +66,13 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
   app.get('/canteen', function (req, res) {
     if (req.session.canteenLoggedIn==true) {
       res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-      res.render('../public/canteen/home.ejs', {address : req.session.address, balance: req.session.balance});
+      res.render('../public/canteen/home.ejs', {address : req.session.address, 
+                                                balance: req.session.balance, 
+                                                customerAddress: req.session.pastOrdersCustomerAddress,
+                                                itemNames: req.session.pastOrdersItemNames,
+                                                itemPrices: req.session.pastOrdersItemPrices,
+                                                status: req.session.pastOrdersStatus
+                                              });
     }
     else{
       res.redirect('/');
@@ -104,7 +110,11 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
         req.session.balance = result;
         contractInstance.methods.getOrdersOfCanteen(address).call({ from: address }).then((result)=>{
           result = JSON.stringify(result);
-          req.session.pastOrders = result;
+          result = JSON.parse(result);
+          req.session.pastOrdersCustomerAddress = result["1"];
+          req.session.pastOrdersItemNames = result["2"];
+          req.session.pastOrdersItemPrices = result["3"];
+          req.session.pastOrdersStatus = result["4"];
           res.redirect('/canteen');
         })
         .catch((err)=>{
