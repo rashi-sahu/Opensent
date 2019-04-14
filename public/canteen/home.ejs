@@ -21,10 +21,38 @@
         <hr>
         <h3 align="center">Past orders</h3>
         <hr>
-        <p><%= customerAddress %></p>
-        <p><%= itemNames %></p>
-        <p><%= itemPrices %></p>
-        <p><%= status %></p>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Sl. No.</th>
+              <th>Customer Address</th>
+              <th>Item Name</th>
+              <th>Price</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for(var i=0; i < customerAddress.length; i++) { %>
+              <tr>
+                <td><%= i+1 %></td>
+                <td><%= customerAddress[i] %></td>
+                <td><%= itemNames[i] %></td>
+                <td><%= itemPrices[i] %></td>
+                <td><% 
+                  if(status[i]==0){ %>
+                    Success
+                 <% }
+                 else if(status[i]==1){ %>
+                    Cancellation Request <a href="">Accept</a>
+                 <% }
+                 else{ %>
+                    Cancelled & Amount Refunded</a>
+                 <% }
+                %></td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
       </div>
       <div class="col-lg-2">
         <p align="right"><a  class="btn btn-primary" href="/canteen/logout">Logout</a></p>
