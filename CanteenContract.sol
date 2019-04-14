@@ -5,6 +5,12 @@ contract CanteenContract {
     uint256 personBalance;
     uint256 governmentBalance;
 
+    struct Item{
+        address canteenAddress;
+        bytes32 itemName;
+        uint256 itemPrice;
+    }
+
     struct Order{
         address canteenAddress;
         address personAddres;
