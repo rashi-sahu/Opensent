@@ -102,7 +102,14 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
         req.session.canteenLoggedIn = true;
         req.session.personLoggedIn = false;
         req.session.balance = result;
-        res.redirect('/canteen');
+        contractInstance.methods.getOrdersOfCanteen(address).call({ from: address }).then((result)=>{
+          result = JSON.stringify(result);
+          req.session.pastOrders = result;
+          res.redirect('/canteen');
+        })
+        .catch((err)=>{
+          console.log(err);
+        })
       })
       .catch((err) => {
         console.log('Some error occured in canteen login' + err);
