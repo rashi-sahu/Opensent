@@ -81,13 +81,12 @@ contract CanteenContract {
                     count++;
                 }
             }
-            address[] memory canteenAddresses = new address[](indexes.length);
-            address[] memory personAddresses = new address[](indexes.length);
-            bytes32[] memory itemNames = new bytes32[](indexes.length);
-            uint256[] memory prices = new uint256[](indexes.length);
-            uint256[] memory statusArray = new uint256[](indexes.length);
-
-            for (i = 0; i < indexes.length; i++) {
+            address[] memory canteenAddresses = new address[](count);
+            address[] memory personAddresses = new address[](count);
+            bytes32[] memory itemNames = new bytes32[](count);
+            uint256[] memory prices = new uint256[](count);
+            uint256[] memory statusArray = new uint256[](count);
+            for (i = 0; i < count; i++) {
                 Order storage order = orders[indexes[i]];
                 canteenAddresses[i] = order.canteenAddress;
                 personAddresses[i] = order.personAddres;
@@ -95,5 +94,6 @@ contract CanteenContract {
                 prices[i] = order.itemPrice;
                 statusArray[i] = order.status;
             }
+            return (canteenAddresses, personAddresses, itemNames, prices, statusArray);
     }
 }
