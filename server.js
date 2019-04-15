@@ -188,7 +188,11 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
           .then(signed => {
             var tran = web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'));
             tran.on('transactionHash', hash => {
-              res.redirect('/person');
+              contractInstance.methods.getPersonBalance(address).call({ from: address })
+              .then(result => {
+                req.session.balance = result;
+                res.redirect('/person');
+              })
             });
             tran.on('error', console.error);
           })
