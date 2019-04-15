@@ -56,13 +56,19 @@ contract CanteenContract {
         items.push(dummyItem);
     }
 
-    function buyItem(bytes32 item) public{
-        // if(validItem(item)==false) throw;
-        uint256 price = menu[item];
-        uint256 totalPrice = price+5;
-        canteenBalance += price;
-        governmentBalance += 5;
-        personBalance -= totalPrice;
+    function buyItem(bytes32 itemId, address personAddress) public{
+        for (uint256 i = 0; i < items.length; i++){
+            if(items[i].itemId == itemId){
+                uint256 itemPrice = items[i].itemPrice;
+                persons[personAddress] -= itemPrice + 5;
+                canteens[items[i].canteenAddress] += itemPrice;
+                governmentBalance += 5;
+                Order memory newOrder = Order(items[i].canteenAddress, personAddress, 
+                                                items[i].itemName, itemPrice, 0);
+                orders.push(newOrder);
+                break;
+            }
+        }
     }
 
     function getGovernmentBalance() public returns (uint256){

@@ -165,16 +165,17 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
     res.redirect('/');
   })
 
-  app.post('/buy', function (req, res) {
-    const itemName = req.body.itemName.trim();
-    var privateKey = req.body.privateKey.trim();
-    var encodedABI = contractInstance.methods.buyItem(web3.utils.asciiToHex(itemName)).encodeABI();
-    web3.eth.getTransactionCount(defaultAddress)
+  app.get('/person/buy/:itemId', function (req, res) {
+    const itemId = req.params.itemId;
+    var privateKey = req.session.privateKey;
+    var address = req.session.address;
+    var encodedABI = contractInstance.methods.buyItem(web3.utils.asciiToHex(itemId), address).encodeABI();
+    web3.eth.getTransactionCount(address)
       .then((result) => {
         var nonce = result;
         var tx = {
           nonce: nonce,
-          from: defaultAddress,
+          from: address,
           to: contractInstance.options.address,
           gas: 2000000,
           data: encodedABI,
@@ -187,7 +188,7 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
           .then(signed => {
             var tran = web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'));
             tran.on('transactionHash', hash => {
-              res.send('Success');
+              res.redirect('/person');
             });
             tran.on('error', console.error);
           })
