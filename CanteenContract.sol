@@ -132,4 +132,29 @@ contract CanteenContract {
             }
             return (canteenAddresses, personAddresses, itemNames, prices, statusArray);
     }
+        function getOrdersOfPerson(address _personAddress) public
+        returns (address[], address[], bytes32[], uint256[], uint256[]){
+            uint256[] memory indexes = new uint256[](100);
+            uint256 count = 0;
+            for (uint256 i = 0; i < orders.length; i++){
+                if(orders[i].personAddres == _personAddress){
+                    indexes[count] = i;
+                    count++;
+                }
+            }
+            address[] memory canteenAddresses = new address[](count);
+            address[] memory personAddresses = new address[](count);
+            bytes32[] memory itemNames = new bytes32[](count);
+            uint256[] memory prices = new uint256[](count);
+            uint256[] memory statusArray = new uint256[](count);
+            for (i = 0; i < count; i++) {
+                Order storage order = orders[indexes[i]];
+                canteenAddresses[i] = order.canteenAddress;
+                personAddresses[i] = order.personAddres;
+                itemNames[i] = order.itemName;
+                prices[i] = order.itemPrice;
+                statusArray[i] = order.status;
+            }
+            return (canteenAddresses, personAddresses, itemNames, prices, statusArray);
+    }
 }

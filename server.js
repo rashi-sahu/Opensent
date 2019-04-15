@@ -61,7 +61,11 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
                                                 catalogueItemIds: req.session.itemIds,
                                                 catalogueCanteenAddress: req.session.catalogueCanteenAddress,
                                                 catalogueItemName: req.session.catalogueItemName,
-                                                catalogueItemPrice: req.session.catalogueItemPrice
+                                                catalogueItemPrice: req.session.catalogueItemPrice,
+                                                canteenAddress: req.session.pastOrdersCanteenAddress,
+                                                itemNames: req.session.pastOrdersItemNames,
+                                                itemPrices: req.session.pastOrdersItemPrices,
+                                                status: req.session.pastOrdersStatus
                                               });
     }
     else{
@@ -201,6 +205,33 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
             res.status('400').send(`Failed! ${e}`);
           });
       });
+  });
+
+  app.get('/person/past_orders', function(req, res){
+    if (req.session.personLoggedIn==true) {
+      var address = req.session.address;
+      contractInstance.methods.getOrdersOfPerson(address).call({ from: address }).then((result)=>{
+        result = JSON.stringify(result);
+        result = JSON.parse(result);
+        for(var i=0; i<result["2"].length; i++){
+          result["2"][i] = web3.utils.toUtf8(result["2"][i]);        
+        }
+        res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+        res.render('../public/person/pastOrders.ejs', {address : req.session.address, 
+                                                  balance: req.session.balance,
+                                                  canteenAddress: result["0"],
+                                                  itemNames: result["2"],
+                                                  itemPrices: result["3"],
+                                                  status: result["4"]
+                                                });
+        })
+      .catch((err)=>{
+        console.log(err);
+      })
+    }
+    else{
+      res.redirect('/');
+    }
   });
 
   app.get('/person/recharge', function (req, res) {

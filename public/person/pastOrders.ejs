@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Canteen Dapp</title>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet" type="text/css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Canteen Management Dashboard</h1>
+    <div class = "row">
+      <div class="col-lg-10">
+        <h2>Welcome <%= address %></h2>
+        <h3>Your Balance <%= balance %> Rs.</h3>
+      </div>
+      <div class="col-lg-2">
+        <p align="right"><a  class="btn btn-primary" href="/person/logout">Logout</a></p>
+      </div>
+    </div>
+    <h3 align="center">Your Past orders</h3>
+        <hr>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Sl. No.</th>
+              <th>Canteen Address</th>
+              <th>Item Name</th>
+              <th>Price</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for(var i=0; i < canteenAddress.length; i++) { %>
+              <tr>
+                <td><%= i+1 %></td>
+                <td><%= canteenAddress[i] %></td>
+                <td><%= itemNames[i] %></td>
+                <td><%= itemPrices[i] %></td>
+                <td><% 
+                  if(status[i]==0){ %>
+                    Success
+                 <% }
+                 else if(status[i]==1){ %>
+                    Cancellation Request <a href="">Accept</a>
+                 <% }
+                 else{ %>
+                    Cancelled & Amount Refunded</a>
+                 <% }
+                %></td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+        <br><br>
+    <p align="right"><b><a href="/person/recharge">Recharge Person Wallet</a></b></p>
+  </div>
+</body>
+
+</html>
