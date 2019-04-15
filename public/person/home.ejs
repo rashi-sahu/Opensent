@@ -29,6 +29,7 @@
         <thead>
           <tr>
             <th>Sl. No.</th>
+            <th>Item Id</th>
             <th>Canteen Address</th>
             <th>Item</th>
             <th>Price</th>
@@ -39,6 +40,7 @@
           <% for(var i=0; i < catalogueCanteenAddress.length; i++) { %>
                 <tr>
                   <td><%= i+1 %></td>
+                  <td><%= catalogueItemIds[i] %></td>
                   <td><%= catalogueCanteenAddress[i] %></td>
                   <td><%= catalogueItemName[i] %></td>
                   <td><%= catalogueItemPrice[i] %></td>

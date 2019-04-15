@@ -58,6 +58,7 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
       res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
       res.render('../public/person/home.ejs', {address : req.session.address, 
                                                 balance: req.session.balance,
+                                                catalogueItemIds: req.session.itemIds,
                                                 catalogueCanteenAddress: req.session.catalogueCanteenAddress,
                                                 catalogueItemName: req.session.catalogueItemName,
                                                 catalogueItemPrice: req.session.catalogueItemPrice
@@ -98,12 +99,16 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
         contractInstance.methods.getItems().call({ from: address }).then((result)=>{
           result = JSON.stringify(result);
           result = JSON.parse(result);
-          req.session.catalogueCanteenAddress = result["0"];
-          for(var i=0; i<result["1"].length; i++){
-            result["1"][i] = web3.utils.toUtf8(result["1"][i]);
+          for(var i=0; i<result["0"].length; i++){
+            result["0"][i] = web3.utils.toUtf8(result["0"][i]);
           }
-          req.session.catalogueItemName = result["1"];
-          req.session.catalogueItemPrice = result["2"];
+          req.session.itemIds = result[0];
+          req.session.catalogueCanteenAddress = result["1"];
+          for(var i=0; i<result["2"].length; i++){
+            result["2"][i] = web3.utils.toUtf8(result["2"][i]);
+          }
+          req.session.catalogueItemName = result["2"];
+          req.session.catalogueItemPrice = result["3"];
           res.redirect('/person');
         })
         .catch((err) => {

@@ -6,6 +6,7 @@ contract CanteenContract {
     uint256 governmentBalance;
 
     struct Item{
+        bytes32 itemId;
         address canteenAddress;
         bytes32 itemName;
         uint256 itemPrice;
@@ -47,11 +48,11 @@ contract CanteenContract {
                                 0xa45E358D48C6890f5e8D3C6AD4aBB6Ce8D730de4,
                                 "Maggi", 20, 0);
         orders.push(dummyOrder);
-        Item memory dummyItem = Item(0xAC6474E46f5E87bAf69EEE2c05b73cBD3b8b403f, "Maggi", 20);
+        Item memory dummyItem = Item("7qu8yc41pjui09mb8", 0xAC6474E46f5E87bAf69EEE2c05b73cBD3b8b403f, "Maggi", 20);
         items.push(dummyItem);
-        dummyItem = Item(0xAC6474E46f5E87bAf69EEE2c05b73cBD3b8b403f, "Burger", 30);
+        dummyItem = Item("7qu8yc41pjui09pba", 0xAC6474E46f5E87bAf69EEE2c05b73cBD3b8b403f, "Burger", 30);
         items.push(dummyItem);
-        dummyItem = Item(0x4c471A18A164F39540Fd0E9AccC0926DBee42d96, "Pasta", 80);
+        dummyItem = Item("7qu8yc41pjui09sgv", 0x4c471A18A164F39540Fd0E9AccC0926DBee42d96, "Pasta", 80);
         items.push(dummyItem);
     }
 
@@ -85,18 +86,20 @@ contract CanteenContract {
     }
 
     function getItems() public
-        returns(address[], bytes32[], uint256[]){
+        returns(bytes32[], address[], bytes32[], uint256[]){
             uint256 count = items.length;
+            bytes32[] memory itemIds = new bytes32[](count);
             address[] memory canteenAddresses = new address[](count);
             bytes32[] memory itemNames = new bytes32[](count);
             uint256[] memory itemPrices = new uint256[](count);
             for (uint256 i = 0; i < count; i++) {
                 Item storage item = items[i];
+                itemIds[i] = item.itemId;
                 canteenAddresses[i] = item.canteenAddress;
                 itemNames[i] = item.itemName;
                 itemPrices[i] = item.itemPrice;
             }
-            return (canteenAddresses, itemNames, itemPrices);
+            return (itemIds, canteenAddresses, itemNames, itemPrices);
     }
     function getOrdersOfCanteen(address _canteenAddress) public
         returns (address[], address[], bytes32[], uint256[], uint256[]){
