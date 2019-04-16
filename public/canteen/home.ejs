@@ -50,7 +50,7 @@
               <td><%= itemPrices[i] %></td>
               <td><%
                   if(status[i]==0){ %>
-                    Incoming Order <a href=""> Accept </a>
+                    Incoming Order <a href="/canteen/accept_order/<%= orderId[i] %>"> Accept </a>
                  <% }
                  else if(status[i]==1){ %>
                     Accepted <a href=""> Mark Completed </a>

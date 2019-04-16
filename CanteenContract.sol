@@ -75,7 +75,7 @@ contract CanteenContract {
         }
     }
 
-    function acceptOrder(bytes32 orderId){
+    function acceptOrder(bytes32 orderId) public {
         for (uint256 i = 0; i < orders.length; i++){
                 if(orders[i].orderId == orderId){
                     if(orders[i].status==0)
