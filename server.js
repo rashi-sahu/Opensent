@@ -91,13 +91,7 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
     if (req.session.canteenLoggedIn==true) {
       res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
       res.render('../public/canteen/home.ejs', {address : req.session.address,
-                                                balance: req.session.balance,
-                                                customerAddress: req.session.pastOrdersCustomerAddress,
-                                                itemNames: req.session.pastOrdersItemNames,
-                                                itemPrices: req.session.pastOrdersItemPrices,
-                                                orderId: req.session.pastOrderId,
-                                                orderTs: req.session.pastOrderTs,
-                                                status: req.session.pastOrderStatus
+                                                balance: req.session.balance
                                               });
     }
     else{
@@ -151,34 +145,7 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
         req.session.canteenLoggedIn = true;
         req.session.personLoggedIn = false;
         req.session.balance = result;
-        contractInstance.methods.getOrdersOfCanteenPart1(address).call({ from: address }).then((result)=>{
-          result = JSON.stringify(result);
-          result = JSON.parse(result);
-          req.session.pastOrdersCustomerAddress = result["0"];
-          for(var i=0; i<result["1"].length; i++){
-            result["1"][i] = web3.utils.toUtf8(result["1"][i]);
-          }
-          req.session.pastOrdersItemNames = result["1"];
-          req.session.pastOrdersItemPrices = result["2"];
-          contractInstance.methods.getOrdersOfCanteenPart2(address).call({ from: address }).then((result)=>{
-            result = JSON.stringify(result);
-            result = JSON.parse(result);
-            for(var i=0; i<result["0"].length; i++){
-              result["0"][i] = web3.utils.toUtf8(result["0"][i]);
-              result["1"][i] = formatTS(web3.utils.toUtf8(result["1"][i]));
-            }
-            req.session.pastOrderId = result["0"];
-            req.session.pastOrderTs = result["1"];
-            req.session.pastOrderStatus = result["2"];
-            res.redirect('/canteen');
-          })
-          .catch((err)=>{
-            console.log(err);
-          })
-        })
-        .catch((err)=>{
-          console.log(err);
-        })
+        res.redirect('/canteen');
       })
       .catch((err) => {
         console.log('Some error occured in canteen login' + err);
@@ -283,6 +250,65 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
       res.redirect('/');
     }
   });
+
+  app.get('/canteen/past_orders', function(req, res){
+    if (req.session.canteenLoggedIn==true) {
+      const privateKey = req.session.privateKey;
+      const address = req.session.address;
+      contractInstance.methods.getCanteenBalance(address).call({ from: address })
+        .then(result => {
+          req.session.privateKey = privateKey;
+          req.session.address = address;
+          req.session.canteenLoggedIn = true;
+          req.session.personLoggedIn = false;
+          req.session.balance = result;
+          contractInstance.methods.getOrdersOfCanteenPart1(address).call({ from: address }).then((result)=>{
+            result = JSON.stringify(result);
+            result = JSON.parse(result);
+            req.session.pastOrdersCustomerAddress = result["0"];
+            for(var i=0; i<result["1"].length; i++){
+              result["1"][i] = web3.utils.toUtf8(result["1"][i]);
+            }
+            req.session.pastOrdersItemNames = result["1"];
+            req.session.pastOrdersItemPrices = result["2"];
+            contractInstance.methods.getOrdersOfCanteenPart2(address).call({ from: address }).then((result)=>{
+              result = JSON.stringify(result);
+              result = JSON.parse(result);
+              for(var i=0; i<result["0"].length; i++){
+                result["0"][i] = web3.utils.toUtf8(result["0"][i]);
+                result["1"][i] = formatTS(web3.utils.toUtf8(result["1"][i]));
+              }
+              req.session.pastOrderId = result["0"];
+              req.session.pastOrderTs = result["1"];
+              req.session.pastOrderStatus = result["2"];
+              res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+              res.render('../public/canteen/pastOrders.ejs', {address : req.session.address,
+                                                        balance: req.session.balance,
+                                                        customerAddress: req.session.pastOrdersCustomerAddress,
+                                                        itemNames: req.session.pastOrdersItemNames,
+                                                        itemPrices: req.session.pastOrdersItemPrices,
+                                                        orderId: req.session.pastOrderId,
+                                                        orderTs: req.session.pastOrderTs,
+                                                        status: req.session.pastOrderStatus
+                                                      });
+            })
+            .catch((err)=>{
+              console.log(err);
+            })
+          })
+          .catch((err)=>{
+            console.log(err);
+          })
+        })
+        .catch((err) => {
+          console.log('Some error occured in canteen login' + err);
+          res.redirect('/');
+        })
+    }
+    else{
+      res.redirect('/');
+    }
+  })
 
   app.get('/canteen/accept_order/:orderId', function(req, res){
     if (req.session.canteenLoggedIn==true) {
