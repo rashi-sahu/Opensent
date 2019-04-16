@@ -47,7 +47,7 @@ contract CanteenContract {
         persons[0x95Ee97078a54716146E3546508be5694aF43caa8] = 1000;
         Order memory dummyOrder = Order(0xAC6474E46f5E87bAf69EEE2c05b73cBD3b8b403f,
                                 0xa45E358D48C6890f5e8D3C6AD4aBB6Ce8D730de4,
-                                "7qu8yc41pjui09mb8", "7qu8yc28ljui8o702", "2019-04-16T07:44:36.148Z", 0);
+                                "7qu8yc41pjui09mb8", "7qu8yc28ljui8o702", "20190416074436", 0);
         orders.push(dummyOrder);
         Item memory dummyItem = Item("7qu8yc41pjui09mb8", 0xAC6474E46f5E87bAf69EEE2c05b73cBD3b8b403f, "Maggi", 20);
         items.push(dummyItem);

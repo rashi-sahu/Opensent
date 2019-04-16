@@ -26,6 +26,18 @@ app.use(sessions({
 }));
 app.set('view-engine', 'ejs');
 function pad2(n) { return n < 10 ? '0' + n : n }
+
+function formatTS(ts){
+  ts = ts.toString();
+  var year = ts.substring(0, 4);
+  var month = ts.substring(4, 6);
+  var date = ts.substring(6, 8);
+  var hour = ts.substring(8, 10);
+  var minute = ts.substring(10, 12);
+  var second = ts.substring(12, 14);
+  var result = year + ":" + month + ":" + date + " - " + hour + ":" + minute + ":" + second;
+  return result;
+}
 var defaultAddress = '0xa45E358D48C6890f5e8D3C6AD4aBB6Ce8D730de4';
 
 const deploy = async (CanteeContract, byteCode) => {
@@ -153,7 +165,7 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
             result = JSON.parse(result);
             for(var i=0; i<result["0"].length; i++){
               result["0"][i] = web3.utils.toUtf8(result["0"][i]);
-              result["1"][i] = web3.utils.toUtf8(result["1"][i]);
+              result["1"][i] = formatTS(web3.utils.toUtf8(result["1"][i]));
             }
             req.session.pastOrderId = result["0"];
             req.session.pastOrderTs = result["1"];
@@ -243,7 +255,7 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
           result = JSON.parse(result);
           for(var i=0; i<result["0"].length; i++){
             result["0"][i] = web3.utils.toUtf8(result["0"][i]);
-            result["1"][i] = web3.utils.toUtf8(result["1"][i]);
+            result["1"][i] = formatTS(web3.utils.toUtf8(result["1"][i]));
           }
           var orderId = result["0"];
           var ts = result["1"];
