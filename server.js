@@ -335,7 +335,7 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
               var tran = web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'));
               tran.on('transactionHash', hash => {
                 res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-                  res.redirect('/canteen');
+                  res.redirect('/canteen/past_orders');
               });
               tran.on('error', console.error);
             })
@@ -375,7 +375,7 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
               var tran = web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'));
               tran.on('transactionHash', hash => {
                 res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-                  res.redirect('/canteen');
+                  res.redirect('/canteen/past_orders');
               });
               tran.on('error', console.error);
             })
@@ -415,7 +415,7 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
               var tran = web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'));
               tran.on('transactionHash', hash => {
                 res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-                  res.redirect('/canteen');
+                  res.redirect('/canteen/past_orders');
               });
               tran.on('error', console.error);
             })
@@ -455,7 +455,7 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
               var tran = web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'));
               tran.on('transactionHash', hash => {
                 res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-                  res.redirect('/canteen');
+                  res.redirect('/canteen/past_orders');
               });
               tran.on('error', console.error);
             })
