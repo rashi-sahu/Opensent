@@ -82,7 +82,9 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
                                                 customerAddress: req.session.pastOrdersCustomerAddress,
                                                 itemNames: req.session.pastOrdersItemNames,
                                                 itemPrices: req.session.pastOrdersItemPrices,
-                                                status: req.session.pastOrdersStatus
+                                                orderId: req.session.pastOrderId,
+                                                orderTs: req.session.pastOrderTs,
+                                                status: req.session.pastOrderStatus
                                               });
     }
     else{
@@ -136,17 +138,30 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
         req.session.canteenLoggedIn = true;
         req.session.personLoggedIn = false;
         req.session.balance = result;
-        contractInstance.methods.getOrdersOfCanteen(address).call({ from: address }).then((result)=>{
+        contractInstance.methods.getOrdersOfCanteenPart1(address).call({ from: address }).then((result)=>{
           result = JSON.stringify(result);
           result = JSON.parse(result);
-          req.session.pastOrdersCustomerAddress = result["1"];
-          for(var i=0; i<result["2"].length; i++){
-            result["2"][i] = web3.utils.toUtf8(result["2"][i]);
+          req.session.pastOrdersCustomerAddress = result["0"];
+          for(var i=0; i<result["1"].length; i++){
+            result["1"][i] = web3.utils.toUtf8(result["1"][i]);
           }
-          req.session.pastOrdersItemNames = result["2"];
-          req.session.pastOrdersItemPrices = result["3"];
-          req.session.pastOrdersStatus = result["4"];
-          res.redirect('/canteen');
+          req.session.pastOrdersItemNames = result["1"];
+          req.session.pastOrdersItemPrices = result["2"];
+          contractInstance.methods.getOrdersOfCanteenPart2(address).call({ from: address }).then((result)=>{
+            result = JSON.stringify(result);
+            result = JSON.parse(result);
+            for(var i=0; i<result["0"].length; i++){
+              result["0"][i] = web3.utils.toUtf8(result["0"][i]);
+              result["1"][i] = web3.utils.toUtf8(result["1"][i]);
+            }
+            req.session.pastOrderId = result["0"];
+            req.session.pastOrderTs = result["1"];
+            req.session.pastOrderStatus = result["2"];
+            res.redirect('/canteen');
+          })
+          .catch((err)=>{
+            console.log(err);
+          })
         })
         .catch((err)=>{
           console.log(err);
