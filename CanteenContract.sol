@@ -84,7 +84,7 @@ contract CanteenContract {
                 }
             }
     }
-    function markOrderCompleted(bytes32 orderId){
+    function markOrderCompleted(bytes32 orderId) public {
         for (uint256 i = 0; i < orders.length; i++){
                 if(orders[i].orderId == orderId){
                     if(orders[i].status==1)
@@ -93,7 +93,7 @@ contract CanteenContract {
                 }
             }
     }
-    function requestOrderCancellation(bytes32 orderId){
+    function requestOrderCancellation(bytes32 orderId) public {
         for (uint256 i = 0; i < orders.length; i++){
                 if(orders[i].orderId == orderId){
                     if(orders[i].status==0 || orders[i].status==1)
@@ -102,7 +102,7 @@ contract CanteenContract {
                 }
             }
     }
-    function acceptOrderCancellationRequest(bytes32 orderId){
+    function acceptOrderCancellationRequest(bytes32 orderId) public {
         for (uint256 i = 0; i < orders.length; i++){
                 if(orders[i].orderId == orderId){
                     if(orders[i].status == 2)
@@ -111,7 +111,7 @@ contract CanteenContract {
                 }
             }
     }
-    function refundCancellationAmount(bytes32 orderId){
+    function refundCancellationAmount(bytes32 orderId) public {
         for (uint256 i = 0; i < orders.length; i++){
                 if(orders[i].orderId == orderId){
                     if(orders[i].status==3){
