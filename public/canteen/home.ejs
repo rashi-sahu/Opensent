@@ -48,17 +48,26 @@
               <td><%= customerAddress[i] %></td>
               <td><%= itemNames[i] %></td>
               <td><%= itemPrices[i] %></td>
-              <td><% 
-                if(status[i]==0){ %>
-                  Success
-                <% }
-                else if(status[i]==1){ %>
-                  Cancellation Request <a href="">Accept</a>
-                <% }
-                else{ %>
-                  Cancelled & Amount Refunded</a>
-                <% }
-              %></td>
+              <td><%
+                  if(status[i]==0){ %>
+                    Incoming Order <a href=""> Accept </a>
+                 <% }
+                 else if(status[i]==1){ %>
+                    Accepted <a href=""> Mark Completed </a>
+                 <% }
+                 else if(status[i]==4){ %>
+                     Order Completed
+                 <% }
+                 else if(status[i]==2){ %>
+                    Cancellation Request Made <a href=""> Accept </a>
+                 <% }
+                 else if(status[i]==3){ %>
+                    Cancellation request accepted <a href=""> Refund </a>
+                 <% }
+                 else if(status[i]==5){ %>
+                    Cancelled & Amount Refunded</a>
+                 <% }
+                %></td>
             </tr>
           <% } %>
         </tbody>

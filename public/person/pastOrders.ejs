@@ -46,14 +46,23 @@
                 <td><%= canteenAddress[i] %></td>
                 <td><%= itemNames[i] %></td>
                 <td><%= itemPrices[i] %></td>
-                <td><% 
+                <td><%
                   if(status[i]==0){ %>
-                    Success
+                    Order made <a href=""> Cancel </a>
                  <% }
                  else if(status[i]==1){ %>
-                    Cancellation Request <a href="">Accept</a>
+                    Accepted
                  <% }
-                 else{ %>
+                 else if(status[i]==4){ %>
+                     Order Completed
+                 <% }
+                 else if(status[i]==2){ %>
+                    Cancellation Request Made
+                 <% }
+                 else if(status[i]==3){ %>
+                    Cancellation request accepted
+                 <% }
+                 else if(status[i]==5){ %>
                     Cancelled & Amount Refunded</a>
                  <% }
                 %></td>

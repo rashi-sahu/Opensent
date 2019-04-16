@@ -20,9 +20,12 @@ contract CanteenContract {
         bytes32 ts;
         uint256 status;
         /*
-        0 denotes success
-        1 denotes cancellation request pending
-        2 cancellation accepted & amount refunded
+        0 denotes order made by person
+        1 denotes order accepted by canteen
+        4 denoted order finished
+        2 cancellation requested by canteen
+        3 cancellation accepted by canteen
+        5 amount refunded and order finished
         */
     }
     mapping (bytes32 => uint256) public menu;
