@@ -15,7 +15,7 @@
 
 <body>
   <div class="container">
-    <h1>Canteen Management Dashboard</h1>
+    <h1 align="center">Canteen DApp</h1>
     <div class = "row">
       <div class="col-lg-10">
         <h2>Welcome <%= address %></h2>
@@ -27,7 +27,7 @@
     </div>
     <h2 align="center">Catalogue</h2>
     <div class="table-responsive">
-      <table class="table table-bordered">
+      <table class="table table-striped">
         <thead>
           <tr>
             <th>Sl. No.</th>
@@ -46,7 +46,7 @@
                   <td><%= catalogueCanteenAddress[i] %></td>
                   <td><%= catalogueItemName[i] %></td>
                   <td><%= catalogueItemPrice[i] %></td>
-                  <td><a href="/person/buy/<%= catalogueItemIds[i] %>">Buy</a></td>
+                  <td><b><a style="color:#4285F4" href="/person/buy/<%= catalogueItemIds[i] %>">Buy</a></b></td>
                 </tr>
               <% } %>
         </tbody>

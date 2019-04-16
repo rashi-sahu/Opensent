@@ -15,7 +15,7 @@
 
 <body>
   <div class="container">
-    <h1>Canteen Management Dashboard</h1>
+    <h1 align="center">Canteen DApp</h1>
     <div class = "row">
       <div class="col-lg-10">
         <h2>Welcome <%= address %></h2>
@@ -29,7 +29,7 @@
       <hr>
       <h3 align="center">Past orders</h3>
       <hr>
-      <table class="table table-bordered">
+      <table class="table table-striped">
         <thead>
           <tr>
             <th>Sl. No.</th>
@@ -52,22 +52,22 @@
               <td><%= itemPrices[i] %></td>
               <td><%
                   if(status[i]==0){ %>
-                    Incoming Order <a href="/canteen/accept_order/<%= orderId[i] %>"> Accept </a>
+                    Incoming Order <b><a style="color:#4285F4" href="/canteen/accept_order/<%= orderId[i] %>">&nbsp&nbsp&nbspAccept </a></b>
                  <% }
                  else if(status[i]==1){ %>
-                    Accepted <a href="/canteen/mark_order_complete/<%= orderId[i] %>"> Mark Completed </a>
+                    Accepted <b><a style="color:#4285F4" href="/canteen/mark_order_complete/<%= orderId[i] %>">&nbsp&nbsp&nbspMark Completed </a></b>
                  <% }
                  else if(status[i]==4){ %>
-                     Order Completed
+                     <span style="color:green;">Order Completed</span>
                  <% }
                  else if(status[i]==2){ %>
-                    Cancellation Request Made <a href="/canteen/accept_cancellation/<%= orderId[i] %>"> Accept </a>
+                    Cancellation Requested <b><a style="color:#4285F4" href="/canteen/accept_cancellation/<%= orderId[i] %>">&nbsp&nbspAccept </a></b>
                  <% }
                  else if(status[i]==3){ %>
-                    Cancellation request accepted <a href="/canteen/refund/<%= orderId[i] %>"> Refund </a>
+                    Cancellation Accepted <b><a style="color:#4285F4" href="/canteen/refund/<%= orderId[i] %>">&nbsp&nbspRefund </a></b>
                  <% }
                  else if(status[i]==5){ %>
-                    Cancelled & Amount Refunded</a>
+                    <span style="color:green;">Cancelled & Amount Refunded</span>
                  <% }
                 %></td>
             </tr>

@@ -14,7 +14,7 @@
 
 <body>
   <div class="container">
-    <h1>Canteen Management Dashboard</h1>
+    <h1 align="center">Canteen DApp</h1>
     <div class = "row">
       <div class="col-lg-10">
         <h2>Welcome <%= address %></h2>
@@ -25,8 +25,7 @@
       </div>
     </div>
     <h3 align="center">Your Past orders</h3>
-        <hr>
-        <table class="table table-bordered">
+        <table class="table table-striped">
           <thead>
             <tr>
               <th>Sl. No.</th>
@@ -49,13 +48,13 @@
                 <td><%= itemPrices[i] %></td>
                 <td><%
                   if(status[i]==0){ %>
-                    Order made <a href="/person/cancel_order/<%= orderId[i] %>"> Cancel </a>
+                    Order made <b><a style="color:#4285F4" href="/person/cancel_order/<%= orderId[i] %>">&nbsp&nbsp&nbspCancel Order</a></b>
                  <% }
                  else if(status[i]==1){ %>
-                    Accepted <a href="/person/cancel_order/<%= orderId[i] %>"> Cancel </a>
+                    <span style="color:green;">Accepted</span> <b><a style="color:#4285F4" href="/person/cancel_order/<%= orderId[i] %>"> Cancel </a></b>
                  <% }
                  else if(status[i]==4){ %>
-                     Order Completed
+                    <span style="color:green;">Order Completed</span>
                  <% }
                  else if(status[i]==2){ %>
                     Cancellation Request Made
@@ -64,7 +63,7 @@
                     Cancellation request accepted
                  <% }
                  else if(status[i]==5){ %>
-                    Cancelled & Amount Refunded</a>
+                    <span style="color:green;">Cancelled & Amount Refunded</span>
                  <% }
                 %></td>
               </tr>
