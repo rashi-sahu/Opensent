@@ -57,7 +57,7 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
   app.get('/person', function (req, res) {
     if (req.session.personLoggedIn==true) {
       res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-      res.render('../public/person/home.ejs', {address : req.session.address, 
+      res.render('../public/person/home.ejs', {address : req.session.address,
                                                 balance: req.session.balance,
                                                 catalogueItemIds: req.session.itemIds,
                                                 catalogueCanteenAddress: req.session.catalogueCanteenAddress,
@@ -77,8 +77,8 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
   app.get('/canteen', function (req, res) {
     if (req.session.canteenLoggedIn==true) {
       res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-      res.render('../public/canteen/home.ejs', {address : req.session.address, 
-                                                balance: req.session.balance, 
+      res.render('../public/canteen/home.ejs', {address : req.session.address,
+                                                balance: req.session.balance,
                                                 customerAddress: req.session.pastOrdersCustomerAddress,
                                                 itemNames: req.session.pastOrdersItemNames,
                                                 itemPrices: req.session.pastOrdersItemPrices,
@@ -141,7 +141,7 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
           result = JSON.parse(result);
           req.session.pastOrdersCustomerAddress = result["1"];
           for(var i=0; i<result["2"].length; i++){
-            result["2"][i] = web3.utils.toUtf8(result["2"][i]);        
+            result["2"][i] = web3.utils.toUtf8(result["2"][i]);
           }
           req.session.pastOrdersItemNames = result["2"];
           req.session.pastOrdersItemPrices = result["3"];
@@ -211,21 +211,40 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
   app.get('/person/past_orders', function(req, res){
     if (req.session.personLoggedIn==true) {
       var address = req.session.address;
-      contractInstance.methods.getOrdersOfPerson(address).call({ from: address }).then((result)=>{
+      contractInstance.methods.getOrdersOfPersonPart1(address).call({ from: address }).then((result)=>{
         result = JSON.stringify(result);
         result = JSON.parse(result);
-        for(var i=0; i<result["2"].length; i++){
-          result["2"][i] = web3.utils.toUtf8(result["2"][i]);        
+        for(var i=0; i<result["1"].length; i++){
+          result["1"][i] = web3.utils.toUtf8(result["1"][i]);
         }
-        res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-        res.render('../public/person/pastOrders.ejs', {address : req.session.address, 
-                                                  balance: req.session.balance,
-                                                  canteenAddress: result["0"],
-                                                  itemNames: result["2"],
-                                                  itemPrices: result["3"],
-                                                  status: result["4"]
-                                                });
+        var canteenAddress = result["0"];
+        var itemNames = result["1"];
+        var itemPrices = result["2"];
+        contractInstance.methods.getOrdersOfPersonPart2(address).call({ from: address }).then((result)=>{
+          result = JSON.stringify(result);
+          result = JSON.parse(result);
+          for(var i=0; i<result["0"].length; i++){
+            result["0"][i] = web3.utils.toUtf8(result["0"][i]);
+            result["1"][i] = web3.utils.toUtf8(result["1"][i]);
+          }
+          var orderId = result["0"];
+          var ts = result["1"];
+          var status = result["2"];
+          res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+          res.render('../public/person/pastOrders.ejs', {address : req.session.address,
+                                                          balance: req.session.balance,
+                                                          canteenAddress: canteenAddress,
+                                                          itemNames: itemNames,
+                                                          itemPrices: itemPrices,
+                                                          orderId: orderId,
+                                                          ts: ts,
+                                                          status: status
+                                                        });
         })
+        .catch((err)=>{
+          console.log(err);
+        })
+      })
       .catch((err)=>{
         console.log(err);
       })

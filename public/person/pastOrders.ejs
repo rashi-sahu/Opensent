@@ -29,6 +29,8 @@
           <thead>
             <tr>
               <th>Sl. No.</th>
+              <th>Order Id</th>
+              <th>Timestamp</th>
               <th>Canteen Address</th>
               <th>Item Name</th>
               <th>Price</th>
@@ -39,6 +41,8 @@
             <% for(var i=0; i < canteenAddress.length; i++) { %>
               <tr>
                 <td><%= i+1 %></td>
+                <td><%= orderId[i] %></td>
+                <td><%= ts[i] %></td>
                 <td><%= canteenAddress[i] %></td>
                 <td><%= itemNames[i] %></td>
                 <td><%= itemPrices[i] %></td>
