@@ -53,7 +53,7 @@
                     Incoming Order <a href="/canteen/accept_order/<%= orderId[i] %>"> Accept </a>
                  <% }
                  else if(status[i]==1){ %>
-                    Accepted <a href=""> Mark Completed </a>
+                    Accepted <a href="/canteen/mark_order_complete/<%= orderId[i] %>"> Mark Completed </a>
                  <% }
                  else if(status[i]==4){ %>
                      Order Completed
