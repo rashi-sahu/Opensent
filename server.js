@@ -12,6 +12,7 @@ const CanteenContract = new web3.eth.Contract(abiDefinition);
 const byteCode = compiledCode.contracts[':CanteenContract'].bytecode;
 const Tx = require('ethereumjs-tx');
 const util = require('ethereumjs-util');
+var uniqid = require('uniqid');
 var sessions = require('express-session');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
@@ -173,7 +174,7 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
     const itemId = req.params.itemId;
     var privateKey = req.session.privateKey;
     var address = req.session.address;
-    var encodedABI = contractInstance.methods.buyItem(web3.utils.asciiToHex(itemId), address).encodeABI();
+    var encodedABI = contractInstance.methods.buyItem(web3.utils.asciiToHex(itemId), address, web3.utils.asciiToHex(uniqid())).encodeABI();
     web3.eth.getTransactionCount(address)
       .then((result) => {
         var nonce = result;

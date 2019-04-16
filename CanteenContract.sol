@@ -107,32 +107,32 @@ contract CanteenContract {
             }
             return (itemIds, canteenAddresses, itemNames, itemPrices);
     }
-    function getOrdersOfCanteen(address _canteenAddress) public
-        returns (address[], address[], bytes32[], uint256[], bytes32[], uint256[]){
+    function getOrdersOfCanteen(address _canteenAddress) public 
+        returns (address[], bytes32[], bytes32[], uint256[]){
             uint256[] memory indexes = new uint256[](100);
             uint256 count = f(_canteenAddress ,indexes);
             address[] memory canteenAddresses = new address[](count);
             address[] memory personAddresses = new address[](count);
             bytes32[] memory itemNames = new bytes32[](count);
-            uint256[] memory prices = new uint256[](count);
+            // uint256[] memory prices = new uint256[](count);
             bytes32[] memory orderIds = new bytes32[](count);
             uint256[] memory statusArray = new uint256[](count);
-            for (uint256 i = 0; i < count; i++) {
-                Order storage order = orders[indexes[i]];
-                canteenAddresses[i] = order.canteenAddress;
-                personAddresses[i] = order.personAddres;
-                bytes32 itemId = order.itemId;
-                for (uint256 j = 0; j < items.length; j++){
-                    if(items[j].itemId == itemId){
-                        itemNames[i] = items[j].itemName;
-                        prices[i] = items[j].itemPrice;
-                        break;
-                    }
-                }
-                orderIds[i] = order.orderId;
-                statusArray[i] = order.status;
-            }
-            return (canteenAddresses, personAddresses, itemNames, prices, orderIds, statusArray);
+            // for (uint256 i = 0; i < count; i++) {
+            //     Order storage order = orders[indexes[i]];
+            //     canteenAddresses[i] = order.canteenAddress;
+            //     personAddresses[i] = order.personAddres;
+            //     bytes32 itemId = order.itemId;
+            //     for (uint256 j = 0; j < items.length; j++){
+            //         if(items[j].itemId == itemId){
+            //             itemNames[i] = items[j].itemName;
+            //             // prices[i] = items[j].itemPrice;
+            //             break;
+            //         }
+            //     }
+            //     orderIds[i] = order.orderId;
+            //     statusArray[i] = order.status;
+            // }
+            return (personAddresses, itemNames, orderIds, statusArray);
     }
 
     function f(address _canteenAddress, uint256[] indexes) public returns (uint256){
