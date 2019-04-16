@@ -120,15 +120,15 @@ contract CanteenContract {
                         uint256 itemPrice = 0;
                         for (uint256 j = 0; j < items.length; j++){
                             if(items[j].itemId == itemId){
-                            itemPrice = items[j].itemPrice;
+                                itemPrice = items[j].itemPrice;
                                 break;
                             }
                         }
                         persons[orders[i].personAddres] += itemPrice;
-                        canteens[orders[i].canteenAddress] += itemPrice;
+                        canteens[orders[i].canteenAddress] -= itemPrice;
                     }
+                    break;
                 }
-                break;
             }
     }
     function getGovernmentBalance() public returns (uint256){

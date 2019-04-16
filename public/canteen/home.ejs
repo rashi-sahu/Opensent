@@ -62,7 +62,7 @@
                     Cancellation Request Made <a href="/canteen/accept_cancellation/<%= orderId[i] %>"> Accept </a>
                  <% }
                  else if(status[i]==3){ %>
-                    Cancellation request accepted <a href=""> Refund </a>
+                    Cancellation request accepted <a href="/canteen/refund/<%= orderId[i] %>"> Refund </a>
                  <% }
                  else if(status[i]==5){ %>
                     Cancelled & Amount Refunded</a>
