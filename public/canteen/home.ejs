@@ -18,45 +18,61 @@
       <div class="col-lg-10">
         <h2>Welcome <%= address %></h2>
         <h3>Your Balance <%= balance %> Rs.</h3>
-        <hr>
-        <h3 align="center">Past orders</h3>
-        <hr>
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>Sl. No.</th>
-              <th>Customer Address</th>
-              <th>Item Name</th>
-              <th>Price</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% for(var i=0; i < customerAddress.length; i++) { %>
-              <tr>
-                <td><%= i+1 %></td>
-                <td><%= customerAddress[i] %></td>
-                <td><%= itemNames[i] %></td>
-                <td><%= itemPrices[i] %></td>
-                <td><% 
-                  if(status[i]==0){ %>
-                    Success
-                 <% }
-                 else if(status[i]==1){ %>
-                    Cancellation Request <a href="">Accept</a>
-                 <% }
-                 else{ %>
-                    Cancelled & Amount Refunded</a>
-                 <% }
-                %></td>
-              </tr>
-            <% } %>
-          </tbody>
-        </table>
       </div>
-      <div class="col-lg-2">
+       <div class="col-lg-2">
         <p align="right"><a  class="btn btn-primary" href="/canteen/logout">Logout</a></p>
       </div>
     </div>
+    <div class="row">
+      <hr>
+      <h3 align="center">Past orders</h3>
+      <hr>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Sl. No.</th>
+            <th>Order Id</th>
+            <th>Timestamp</th>
+            <th>Customer Address</th>
+            <th>Item Name</th>
+            <th>Price</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(var i=0; i < customerAddress.length; i++) { %>
+            <tr>
+              <td><%= i+1 %></td>
+              <td><%= orderId[i] %></td>
+              <td><%= orderTs[i] %></td>
+              <td><%= customerAddress[i] %></td>
+              <td><%= itemNames[i] %></td>
+              <td><%= itemPrices[i] %></td>
+              <td><%
+                  if(status[i]==0){ %>
+                    Incoming Order <a href="/canteen/accept_order/<%= orderId[i] %>"> Accept </a>
+                 <% }
+                 else if(status[i]==1){ %>
+                    Accepted <a href="/canteen/mark_order_complete/<%= orderId[i] %>"> Mark Completed </a>
+                 <% }
+                 else if(status[i]==4){ %>
+                     Order Completed
+                 <% }
+                 else if(status[i]==2){ %>
+                    Cancellation Request Made <a href="/canteen/accept_cancellation/<%= orderId[i] %>"> Accept </a>
+                 <% }
+                 else if(status[i]==3){ %>
+                    Cancellation request accepted <a href="/canteen/refund/<%= orderId[i] %>"> Refund </a>
+                 <% }
+                 else if(status[i]==5){ %>
+                    Cancelled & Amount Refunded</a>
+                 <% }
+                %></td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </body>
 </html>

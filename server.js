@@ -12,6 +12,7 @@ const CanteenContract = new web3.eth.Contract(abiDefinition);
 const byteCode = compiledCode.contracts[':CanteenContract'].bytecode;
 const Tx = require('ethereumjs-tx');
 const util = require('ethereumjs-util');
+var uniqid = require('uniqid');
 var sessions = require('express-session');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
@@ -24,6 +25,19 @@ app.use(sessions({
   saveUninitialized: true
 }));
 app.set('view-engine', 'ejs');
+function pad2(n) { return n < 10 ? '0' + n : n }
+
+function formatTS(ts){
+  ts = ts.toString();
+  var year = ts.substring(0, 4);
+  var month = ts.substring(4, 6);
+  var date = ts.substring(6, 8);
+  var hour = ts.substring(8, 10);
+  var minute = ts.substring(10, 12);
+  var second = ts.substring(12, 14);
+  var result = year + ":" + month + ":" + date + " - " + hour + ":" + minute + ":" + second;
+  return result;
+}
 var defaultAddress = '0xa45E358D48C6890f5e8D3C6AD4aBB6Ce8D730de4';
 
 const deploy = async (CanteeContract, byteCode) => {
@@ -56,7 +70,7 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
   app.get('/person', function (req, res) {
     if (req.session.personLoggedIn==true) {
       res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-      res.render('../public/person/home.ejs', {address : req.session.address, 
+      res.render('../public/person/home.ejs', {address : req.session.address,
                                                 balance: req.session.balance,
                                                 catalogueItemIds: req.session.itemIds,
                                                 catalogueCanteenAddress: req.session.catalogueCanteenAddress,
@@ -76,12 +90,14 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
   app.get('/canteen', function (req, res) {
     if (req.session.canteenLoggedIn==true) {
       res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-      res.render('../public/canteen/home.ejs', {address : req.session.address, 
-                                                balance: req.session.balance, 
+      res.render('../public/canteen/home.ejs', {address : req.session.address,
+                                                balance: req.session.balance,
                                                 customerAddress: req.session.pastOrdersCustomerAddress,
                                                 itemNames: req.session.pastOrdersItemNames,
                                                 itemPrices: req.session.pastOrdersItemPrices,
-                                                status: req.session.pastOrdersStatus
+                                                orderId: req.session.pastOrderId,
+                                                orderTs: req.session.pastOrderTs,
+                                                status: req.session.pastOrderStatus
                                               });
     }
     else{
@@ -135,17 +151,30 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
         req.session.canteenLoggedIn = true;
         req.session.personLoggedIn = false;
         req.session.balance = result;
-        contractInstance.methods.getOrdersOfCanteen(address).call({ from: address }).then((result)=>{
+        contractInstance.methods.getOrdersOfCanteenPart1(address).call({ from: address }).then((result)=>{
           result = JSON.stringify(result);
           result = JSON.parse(result);
-          req.session.pastOrdersCustomerAddress = result["1"];
-          for(var i=0; i<result["2"].length; i++){
-            result["2"][i] = web3.utils.toUtf8(result["2"][i]);        
+          req.session.pastOrdersCustomerAddress = result["0"];
+          for(var i=0; i<result["1"].length; i++){
+            result["1"][i] = web3.utils.toUtf8(result["1"][i]);
           }
-          req.session.pastOrdersItemNames = result["2"];
-          req.session.pastOrdersItemPrices = result["3"];
-          req.session.pastOrdersStatus = result["4"];
-          res.redirect('/canteen');
+          req.session.pastOrdersItemNames = result["1"];
+          req.session.pastOrdersItemPrices = result["2"];
+          contractInstance.methods.getOrdersOfCanteenPart2(address).call({ from: address }).then((result)=>{
+            result = JSON.stringify(result);
+            result = JSON.parse(result);
+            for(var i=0; i<result["0"].length; i++){
+              result["0"][i] = web3.utils.toUtf8(result["0"][i]);
+              result["1"][i] = formatTS(web3.utils.toUtf8(result["1"][i]));
+            }
+            req.session.pastOrderId = result["0"];
+            req.session.pastOrderTs = result["1"];
+            req.session.pastOrderStatus = result["2"];
+            res.redirect('/canteen');
+          })
+          .catch((err)=>{
+            console.log(err);
+          })
         })
         .catch((err)=>{
           console.log(err);
@@ -173,7 +202,9 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
     const itemId = req.params.itemId;
     var privateKey = req.session.privateKey;
     var address = req.session.address;
-    var encodedABI = contractInstance.methods.buyItem(web3.utils.asciiToHex(itemId), address).encodeABI();
+    var date = (new Date())
+    var ts = date.getFullYear().toString() + pad2(date.getMonth() + 1) + pad2( date.getDate()) + pad2( date.getHours() ) + pad2( date.getMinutes() ) + pad2( date.getSeconds());
+    var encodedABI = contractInstance.methods.buyItem(web3.utils.asciiToHex(itemId), address, web3.utils.asciiToHex(uniqid()), web3.utils.asciiToHex(ts)).encodeABI();
     web3.eth.getTransactionCount(address)
       .then((result) => {
         var nonce = result;
@@ -210,24 +241,243 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
   app.get('/person/past_orders', function(req, res){
     if (req.session.personLoggedIn==true) {
       var address = req.session.address;
-      contractInstance.methods.getOrdersOfPerson(address).call({ from: address }).then((result)=>{
+      contractInstance.methods.getOrdersOfPersonPart1(address).call({ from: address }).then((result)=>{
         result = JSON.stringify(result);
         result = JSON.parse(result);
-        for(var i=0; i<result["2"].length; i++){
-          result["2"][i] = web3.utils.toUtf8(result["2"][i]);        
+        for(var i=0; i<result["1"].length; i++){
+          result["1"][i] = web3.utils.toUtf8(result["1"][i]);
         }
-        res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-        res.render('../public/person/pastOrders.ejs', {address : req.session.address, 
-                                                  balance: req.session.balance,
-                                                  canteenAddress: result["0"],
-                                                  itemNames: result["2"],
-                                                  itemPrices: result["3"],
-                                                  status: result["4"]
-                                                });
+        var canteenAddress = result["0"];
+        var itemNames = result["1"];
+        var itemPrices = result["2"];
+        contractInstance.methods.getOrdersOfPersonPart2(address).call({ from: address }).then((result)=>{
+          result = JSON.stringify(result);
+          result = JSON.parse(result);
+          for(var i=0; i<result["0"].length; i++){
+            result["0"][i] = web3.utils.toUtf8(result["0"][i]);
+            result["1"][i] = formatTS(web3.utils.toUtf8(result["1"][i]));
+          }
+          var orderId = result["0"];
+          var ts = result["1"];
+          var status = result["2"];
+          res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+          res.render('../public/person/pastOrders.ejs', {address : req.session.address,
+                                                          balance: req.session.balance,
+                                                          canteenAddress: canteenAddress,
+                                                          itemNames: itemNames,
+                                                          itemPrices: itemPrices,
+                                                          orderId: orderId,
+                                                          ts: ts,
+                                                          status: status
+                                                        });
         })
+        .catch((err)=>{
+          console.log(err);
+        })
+      })
       .catch((err)=>{
         console.log(err);
       })
+    }
+    else{
+      res.redirect('/');
+    }
+  });
+
+  app.get('/canteen/accept_order/:orderId', function(req, res){
+    if (req.session.canteenLoggedIn==true) {
+      var orderId = req.params.orderId;
+      var address = req.session.address;
+      var privateKey = req.session.privateKey;
+      var encodedABI = contractInstance.methods.acceptOrder(web3.utils.asciiToHex(orderId)).encodeABI();
+      web3.eth.getTransactionCount(address)
+        .then((result) => {
+          var nonce = result;
+          var tx = {
+            nonce: nonce,
+            from: address,
+            to: contractInstance.options.address,
+            gas: 2000000,
+            data: encodedABI,
+          };
+          privateKey = new Buffer(privateKey, 'hex');
+          const transaction = new Tx(tx);
+          transaction.sign(privateKey);
+          const serializedTx = transaction.serialize();
+          web3.eth.accounts.signTransaction(tx, privateKey)
+            .then(signed => {
+              var tran = web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'));
+              tran.on('transactionHash', hash => {
+                res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+                  res.redirect('/canteen');
+              });
+              tran.on('error', console.error);
+            })
+            .catch((e) => {
+              console.log('reject' + e);
+              res.status('400').send(`Failed! ${e}`);
+            });
+        });
+    }
+    else{
+      res.redirect('/');
+    }
+  });
+
+  app.get('/canteen/mark_order_complete/:orderId', function(req, res){
+    if (req.session.canteenLoggedIn==true) {
+      var orderId = req.params.orderId;
+      var address = req.session.address;
+      var privateKey = req.session.privateKey;
+      var encodedABI = contractInstance.methods.markOrderCompleted(web3.utils.asciiToHex(orderId)).encodeABI();
+      web3.eth.getTransactionCount(address)
+        .then((result) => {
+          var nonce = result;
+          var tx = {
+            nonce: nonce,
+            from: address,
+            to: contractInstance.options.address,
+            gas: 2000000,
+            data: encodedABI,
+          };
+          privateKey = new Buffer(privateKey, 'hex');
+          const transaction = new Tx(tx);
+          transaction.sign(privateKey);
+          const serializedTx = transaction.serialize();
+          web3.eth.accounts.signTransaction(tx, privateKey)
+            .then(signed => {
+              var tran = web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'));
+              tran.on('transactionHash', hash => {
+                res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+                  res.redirect('/canteen');
+              });
+              tran.on('error', console.error);
+            })
+            .catch((e) => {
+              console.log('reject' + e);
+              res.status('400').send(`Failed! ${e}`);
+            });
+        });
+    }
+    else{
+      res.redirect('/');
+    }
+  });
+
+  app.get('/canteen/accept_cancellation/:orderId', function(req, res){
+    if (req.session.canteenLoggedIn==true) {
+      var orderId = req.params.orderId;
+      var address = req.session.address;
+      var privateKey = req.session.privateKey;
+      var encodedABI = contractInstance.methods.acceptOrderCancellationRequest(web3.utils.asciiToHex(orderId)).encodeABI();
+      web3.eth.getTransactionCount(address)
+        .then((result) => {
+          var nonce = result;
+          var tx = {
+            nonce: nonce,
+            from: address,
+            to: contractInstance.options.address,
+            gas: 2000000,
+            data: encodedABI,
+          };
+          privateKey = new Buffer(privateKey, 'hex');
+          const transaction = new Tx(tx);
+          transaction.sign(privateKey);
+          const serializedTx = transaction.serialize();
+          web3.eth.accounts.signTransaction(tx, privateKey)
+            .then(signed => {
+              var tran = web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'));
+              tran.on('transactionHash', hash => {
+                res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+                  res.redirect('/canteen');
+              });
+              tran.on('error', console.error);
+            })
+            .catch((e) => {
+              console.log('reject' + e);
+              res.status('400').send(`Failed! ${e}`);
+            });
+        });
+    }
+    else{
+      res.redirect('/');
+    }
+  });
+
+  app.get('/canteen/refund/:orderId', function(req, res){
+    if (req.session.canteenLoggedIn==true) {
+      var orderId = req.params.orderId;
+      var address = req.session.address;
+      var privateKey = req.session.privateKey;
+      var encodedABI = contractInstance.methods.refundCancellationAmount(web3.utils.asciiToHex(orderId)).encodeABI();
+      web3.eth.getTransactionCount(address)
+        .then((result) => {
+          var nonce = result;
+          var tx = {
+            nonce: nonce,
+            from: address,
+            to: contractInstance.options.address,
+            gas: 2000000,
+            data: encodedABI,
+          };
+          privateKey = new Buffer(privateKey, 'hex');
+          const transaction = new Tx(tx);
+          transaction.sign(privateKey);
+          const serializedTx = transaction.serialize();
+          web3.eth.accounts.signTransaction(tx, privateKey)
+            .then(signed => {
+              var tran = web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'));
+              tran.on('transactionHash', hash => {
+                res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+                  res.redirect('/canteen');
+              });
+              tran.on('error', console.error);
+            })
+            .catch((e) => {
+              console.log('reject' + e);
+              res.status('400').send(`Failed! ${e}`);
+            });
+        });
+    }
+    else{
+      res.redirect('/');
+    }
+  });
+
+  app.get('/person/cancel_order/:orderId', function(req, res){
+    if (req.session.personLoggedIn==true) {
+      var orderId = req.params.orderId;
+      var address = req.session.address;
+      var privateKey = req.session.privateKey;
+      var encodedABI = contractInstance.methods.requestOrderCancellation(web3.utils.asciiToHex(orderId)).encodeABI();
+      web3.eth.getTransactionCount(address)
+        .then((result) => {
+          var nonce = result;
+          var tx = {
+            nonce: nonce,
+            from: address,
+            to: contractInstance.options.address,
+            gas: 2000000,
+            data: encodedABI,
+          };
+          privateKey = new Buffer(privateKey, 'hex');
+          const transaction = new Tx(tx);
+          transaction.sign(privateKey);
+          const serializedTx = transaction.serialize();
+          web3.eth.accounts.signTransaction(tx, privateKey)
+            .then(signed => {
+              var tran = web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'));
+              tran.on('transactionHash', hash => {
+                res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+                  res.redirect('/person/past_orders');
+              });
+              tran.on('error', console.error);
+            })
+            .catch((e) => {
+              console.log('reject' + e);
+              res.status('400').send(`Failed! ${e}`);
+            });
+        });
     }
     else{
       res.redirect('/');

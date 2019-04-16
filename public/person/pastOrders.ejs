@@ -29,6 +29,8 @@
           <thead>
             <tr>
               <th>Sl. No.</th>
+              <th>Order Id</th>
+              <th>Timestamp</th>
               <th>Canteen Address</th>
               <th>Item Name</th>
               <th>Price</th>
@@ -39,17 +41,28 @@
             <% for(var i=0; i < canteenAddress.length; i++) { %>
               <tr>
                 <td><%= i+1 %></td>
+                <td><%= orderId[i] %></td>
+                <td><%= ts[i] %></td>
                 <td><%= canteenAddress[i] %></td>
                 <td><%= itemNames[i] %></td>
                 <td><%= itemPrices[i] %></td>
-                <td><% 
+                <td><%
                   if(status[i]==0){ %>
-                    Success
+                    Order made <a href="/person/cancel_order/<%= orderId[i] %>"> Cancel </a>
                  <% }
                  else if(status[i]==1){ %>
-                    Cancellation Request <a href="">Accept</a>
+                    Accepted <a href="/person/cancel_order/<%= orderId[i] %>"> Cancel </a>
                  <% }
-                 else{ %>
+                 else if(status[i]==4){ %>
+                     Order Completed
+                 <% }
+                 else if(status[i]==2){ %>
+                    Cancellation Request Made
+                 <% }
+                 else if(status[i]==3){ %>
+                    Cancellation request accepted
+                 <% }
+                 else if(status[i]==5){ %>
                     Cancelled & Amount Refunded</a>
                  <% }
                 %></td>
