@@ -48,10 +48,10 @@
                 <td><%= itemPrices[i] %></td>
                 <td><%
                   if(status[i]==0){ %>
-                    Order made <a href=""> Cancel </a>
+                    Order made <a href="/person/cancel_order/<%= orderId[i] %>"> Cancel </a>
                  <% }
                  else if(status[i]==1){ %>
-                    Accepted
+                    Accepted <a href="/person/cancel_order/<%= orderId[i] %>"> Cancel </a>
                  <% }
                  else if(status[i]==4){ %>
                      Order Completed
