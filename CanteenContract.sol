@@ -75,6 +75,62 @@ contract CanteenContract {
         }
     }
 
+    function acceptOrder(bytes32 orderId){
+        for (uint256 i = 0; i < orders.length; i++){
+                if(orders[i].orderId == orderId){
+                    if(orders[i].status==0)
+                        orders[i].status = 1;
+                    break;
+                }
+            }
+    }
+    function markOrderCompleted(bytes32 orderId){
+        for (uint256 i = 0; i < orders.length; i++){
+                if(orders[i].orderId == orderId){
+                    if(orders[i].status==1)
+                        orders[i].status = 4;
+                    break;
+                }
+            }
+    }
+    function requestOrderCancellation(bytes32 orderId){
+        for (uint256 i = 0; i < orders.length; i++){
+                if(orders[i].orderId == orderId){
+                    if(orders[i].status==0 || orders[i].status==1)
+                        orders[i].status = 2;
+                    break;
+                }
+            }
+    }
+    function acceptOrderCancellationRequest(bytes32 orderId){
+        for (uint256 i = 0; i < orders.length; i++){
+                if(orders[i].orderId == orderId){
+                    if(orders[i].status == 2)
+                        orders[i].status = 3;
+                    break;
+                }
+            }
+    }
+    function refundCancellationAmount(bytes32 orderId){
+        for (uint256 i = 0; i < orders.length; i++){
+                if(orders[i].orderId == orderId){
+                    if(orders[i].status==3){
+                        orders[i].status = 5;
+                        bytes32 itemId = orders[i].itemId;
+                        uint256 itemPrice = 0;
+                        for (uint256 j = 0; j < items.length; j++){
+                            if(items[j].itemId == itemId){
+                            itemPrice = items[j].itemPrice;
+                                break;
+                            }
+                        }
+                        persons[orders[i].personAddres] += itemPrice;
+                        canteens[orders[i].canteenAddress] += itemPrice;
+                    }
+                }
+                break;
+            }
+    }
     function getGovernmentBalance() public returns (uint256){
         return governmentBalance;
     }
