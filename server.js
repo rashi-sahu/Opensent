@@ -189,7 +189,9 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
     const itemId = req.params.itemId;
     var privateKey = req.session.privateKey;
     var address = req.session.address;
-    var encodedABI = contractInstance.methods.buyItem(web3.utils.asciiToHex(itemId), address, web3.utils.asciiToHex(uniqid())).encodeABI();
+    var ts = (new Date()).toString()
+    ts = ts.replace(/[^0-9]/g, "").slice(0, -3);
+    var encodedABI = contractInstance.methods.buyItem(web3.utils.asciiToHex(itemId), address, web3.utils.asciiToHex(uniqid()), web3.utils.asciiToHex(ts)).encodeABI();
     web3.eth.getTransactionCount(address)
       .then((result) => {
         var nonce = result;
