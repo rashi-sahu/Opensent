@@ -364,6 +364,46 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
     }
   });
 
+  app.get('/canteen/accept_cancellation/:orderId', function(req, res){
+    if (req.session.canteenLoggedIn==true) {
+      var orderId = req.params.orderId;
+      var address = req.session.address;
+      var privateKey = req.session.privateKey;
+      var encodedABI = contractInstance.methods.acceptOrderCancellationRequest(web3.utils.asciiToHex(orderId)).encodeABI();
+      web3.eth.getTransactionCount(address)
+        .then((result) => {
+          var nonce = result;
+          var tx = {
+            nonce: nonce,
+            from: address,
+            to: contractInstance.options.address,
+            gas: 2000000,
+            data: encodedABI,
+          };
+          privateKey = new Buffer(privateKey, 'hex');
+          const transaction = new Tx(tx);
+          transaction.sign(privateKey);
+          const serializedTx = transaction.serialize();
+          web3.eth.accounts.signTransaction(tx, privateKey)
+            .then(signed => {
+              var tran = web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'));
+              tran.on('transactionHash', hash => {
+                res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+                  res.redirect('/canteen');
+              });
+              tran.on('error', console.error);
+            })
+            .catch((e) => {
+              console.log('reject' + e);
+              res.status('400').send(`Failed! ${e}`);
+            });
+        });
+    }
+    else{
+      res.redirect('/');
+    }
+  });
+
   app.get('/person/recharge', function (req, res) {
     res.sendFile(path.join(__dirname + '/public/person/rechargeWallet.html'));
   });

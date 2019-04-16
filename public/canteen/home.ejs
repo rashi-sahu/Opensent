@@ -59,7 +59,7 @@
                      Order Completed
                  <% }
                  else if(status[i]==2){ %>
-                    Cancellation Request Made <a href=""> Accept </a>
+                    Cancellation Request Made <a href="/canteen/accept_cancellation/<%= orderId[i] %>"> Accept </a>
                  <% }
                  else if(status[i]==3){ %>
                     Cancellation request accepted <a href=""> Refund </a>
