@@ -25,6 +25,7 @@ app.use(sessions({
   saveUninitialized: true
 }));
 app.set('view-engine', 'ejs');
+function pad2(n) { return n < 10 ? '0' + n : n }
 var defaultAddress = '0xa45E358D48C6890f5e8D3C6AD4aBB6Ce8D730de4';
 
 const deploy = async (CanteeContract, byteCode) => {
@@ -189,8 +190,8 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
     const itemId = req.params.itemId;
     var privateKey = req.session.privateKey;
     var address = req.session.address;
-    var ts = (new Date()).toString()
-    ts = ts.replace(/[^0-9]/g, "").slice(0, -3);
+    var date = (new Date())
+    var ts = date.getFullYear().toString() + pad2(date.getMonth() + 1) + pad2( date.getDate()) + pad2( date.getHours() ) + pad2( date.getMinutes() ) + pad2( date.getSeconds());
     var encodedABI = contractInstance.methods.buyItem(web3.utils.asciiToHex(itemId), address, web3.utils.asciiToHex(uniqid()), web3.utils.asciiToHex(ts)).encodeABI();
     web3.eth.getTransactionCount(address)
       .then((result) => {
