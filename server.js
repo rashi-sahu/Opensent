@@ -193,7 +193,14 @@ deploy(CanteenContract, byteCode).then((contractInstance) => {
               contractInstance.methods.getPersonBalance(address).call({ from: address })
               .then(result => {
                 req.session.balance = result;
-                res.redirect('/person');
+                contractInstance.methods.getGovernmentBalance().call({ from: address })
+                .then(result => {
+                  console.log("Updates government balance " + result + "Rs.");
+                  res.redirect('/person');
+                })
+                .catch((err)=>{
+                  console.log(err);
+                })
               })
             });
             tran.on('error', console.error);
